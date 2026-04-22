@@ -93,24 +93,45 @@ const ScreenManager = (() => {
 
   // ─── Leaderboard Tab Logic ───
   let _lbTab = 'global';
-  function _loadLeaderboard(tab) {
+  async function _loadLeaderboard(tab) {
     _lbTab = tab;
-    // Update tab active state
+ 
+    // Highlight the active tab button
     document.querySelectorAll('.lb-tab').forEach(t => {
       t.classList.toggle('active', t.dataset.tab === tab);
     });
+ 
     const pilot = Storage.loadPilot();
     const name  = pilot ? pilot.name : '';
-    let entries;
-    if (tab === 'global') {
-      entries = Storage.getGlobalBoard();
-    } else if (tab === 'today') {
-      entries = Storage.getTodayBoard();
-    } else {
-      entries = Storage.getGlobalBoard();
+ 
+    // Show spinner immediately — Supabase call may take ~200ms
+    const container = document.getElementById('lb-list');
+    if (container) {
+      container.innerHTML = '<div class="lb-loading">Loading pilots...</div>';
     }
-    Leaderboard.renderBoard(entries, name, tab);
-    setTimeout(Leaderboard.animateEntries, 50);
+ 
+    try {
+      let entries;
+ 
+      if (tab === 'today') {
+        entries = await Storage.getTodayBoard();   // ← MUST await (async)
+      } else {
+        entries = await Storage.getGlobalBoard();  // ← MUST await (async)
+      }
+ 
+      Leaderboard.renderBoard(entries, name, tab);
+      setTimeout(Leaderboard.animateEntries, 50);
+ 
+    } catch (e) {
+      console.error('[Leaderboard] load failed:', e);
+      if (container) {
+        container.innerHTML = `
+          <div class="lb-empty">
+            ⚠️ Could not reach the server.<br>
+            Check your internet connection and try again.
+          </div>`;
+      }
+    }
   }
 
   // ─── Wire all buttons ───
