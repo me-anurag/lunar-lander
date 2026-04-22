@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#020408">
+<title>LUNAR — Moon Lander</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/game.css">
+<link rel="stylesheet" href="css/leaderboard.css">
+<link rel="stylesheet" href="css/profile.css">
+<link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+
+<!-- ─── Background Layers ─── -->
+<canvas id="star-canvas"></canvas>
+<div id="scanlines"></div>
+<div id="nebula-bg"></div>
+
+<!-- ══════════════════════════════════
+     SCREEN: SPLASH (instant name grab)
+════════════════════════════════════ -->
+<div id="screen-splash" class="screen active">
+  <div class="splash-inner">
+    <div class="splash-badge">MISSION CONTROL · EARTH BASE</div>
+    <div class="splash-logo">LUNAR</div>
+    <div class="splash-tagline">Precision Landing Simulator</div>
+    <div class="splash-divider"></div>
+    <div class="splash-prompt">
+      <div class="prompt-label">PILOT IDENTIFICATION</div>
+      <input type="text" id="pilot-name-input" class="pilot-input" placeholder="Enter your callsign..." maxlength="16" autocomplete="off" spellcheck="false">
+      <div class="avatar-grid" id="avatar-grid"></div>
+      <button class="btn-primary" id="btn-confirm-pilot">INITIATE SEQUENCE ▶</button>
+    </div>
+    <div class="splash-note">No account needed. Your score saves to this device + global board.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN: HOME
+════════════════════════════════════ -->
+<div id="screen-home" class="screen hidden">
+  <div class="home-inner">
+    <div class="home-header">
+      <div id="pilot-card" class="pilot-card">
+        <div class="pilot-avatar" id="home-avatar">🚀</div>
+        <div class="pilot-info">
+          <div class="pilot-name" id="home-pilot-name">PILOT</div>
+          <div class="pilot-rank" id="home-pilot-rank">CADET</div>
+        </div>
+        <div class="pilot-score-col">
+          <div class="pilot-best-label">BEST</div>
+          <div class="pilot-best" id="home-best-score">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-title-wrap">
+      <div class="home-badge">Mission Alpha · Apollo Zero</div>
+      <div class="home-logo">LUNAR</div>
+      <div class="home-sub">Precision Landing Simulator</div>
+    </div>
+
+    <div class="home-laws-panel">
+      <div class="laws-title">⬡ Laws of the Mission</div>
+      <div class="law"><span class="law-num">01</span><span>Land gently — V-Speed &lt;2.0 &amp; H-Speed &lt;1.5 or you crash.</span></div>
+      <div class="law"><span class="law-num">02</span><span>Fuel is finite. Every burn costs. Plan your descent.</span></div>
+      <div class="law"><span class="law-num">03</span><span>Land on the glowing pad only. Miss it and the moon claims you.</span></div>
+      <div class="law"><span class="law-num">04</span><span>Perfect landings grant ×3 bonus. Chain them to multiply glory.</span></div>
+      <div class="law"><span class="law-num">05</span><span>Higher levels add wind, turbulence, and tighter pads.</span></div>
+    </div>
+
+    <div class="home-keys key-legend">
+      <div class="key-item"><span class="key">↑/W</span><span>Thrust</span></div>
+      <div class="key-item"><span class="key">← →</span><span>Side</span></div>
+      <div class="key-item"><span class="key">Space</span><span>Boost</span></div>
+      <div class="key-item"><span class="key">R</span><span>Restart</span></div>
+    </div>
+
+    <div class="home-actions">
+      <button class="btn-primary glow-btn" id="btn-play">▶ LAUNCH MISSION</button>
+      <div class="home-secondary-btns">
+        <button class="btn-secondary" id="btn-leaderboard">🏆 LEADERBOARD</button>
+        <button class="btn-secondary" id="btn-settings">⚙ SETTINGS</button>
+      </div>
+    </div>
+  </div>
+  <div id="home-philosophy-bar" class="philosophy-bar"></div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN: GAME
+════════════════════════════════════ -->
+<div id="screen-game" class="screen hidden">
+  <!-- HUD -->
+  <div id="hud">
+    <button class="hud-home-btn" id="btn-hud-home">⌂</button>
+    <div class="hud-group">
+      <div class="hud-label">ALT</div>
+      <div class="hud-val" id="hud-alt">---</div>
+    </div>
+    <div class="hud-group">
+      <div class="hud-label">V-SPD</div>
+      <div class="hud-val" id="hud-vspeed">---</div>
+    </div>
+    <div class="hud-group">
+      <div class="hud-label">H-SPD</div>
+      <div class="hud-val" id="hud-hspeed">---</div>
+    </div>
+    <div class="hud-fuel-col">
+      <div class="hud-label">FUEL</div>
+      <div class="hud-val" id="hud-fuel">100%</div>
+      <div class="fuel-bar-bg"><div class="fuel-bar-fill" id="fuel-bar"></div></div>
+    </div>
+    <div class="hud-group">
+      <div class="hud-label">SCORE</div>
+      <div class="hud-val" id="hud-score">0</div>
+    </div>
+    <div class="level-badge" id="level-badge">LVL 1</div>
+  </div>
+
+  <canvas id="game-canvas"></canvas>
+
+  <!-- Floating feedback -->
+  <div id="streak-banner">🔥 STREAK ACTIVE</div>
+
+  <!-- Result Modal -->
+  <div id="msg-overlay">
+    <div id="msg-box">
+      <div class="msg-icon" id="msg-icon">🌙</div>
+      <div class="msg-title" id="msg-title">TOUCHDOWN</div>
+      <div class="msg-sub" id="msg-sub">Perfect approach</div>
+      <div class="msg-score" id="msg-score">0</div>
+      <div class="msg-score-label">MISSION SCORE</div>
+      <div class="msg-breakdown" id="msg-breakdown"></div>
+      <div class="msg-btns">
+        <button class="btn-modal" id="btn-next">NEXT MISSION →</button>
+        <button class="btn-modal secondary" id="btn-restart-modal">↺ RESTART</button>
+        <button class="btn-modal tertiary" id="btn-modal-home">⌂ HOME</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Touch Gamepad -->
+  <div id="touch-controls">
+    <div class="tc-group">
+      <div class="tbtn" id="tc-left">◀</div>
+      <div class="tbtn" id="tc-right">▶</div>
+    </div>
+    <div class="tbtn gold" id="tc-up">▲</div>
+    <div class="tbtn gold" id="tc-boost">⚡</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN: LEADERBOARD
+════════════════════════════════════ -->
+<div id="screen-leaderboard" class="screen hidden">
+  <div class="lb-inner">
+    <div class="lb-header">
+      <button class="back-btn" id="btn-lb-back">← BACK</button>
+      <div class="lb-title">🏆 LEADERBOARD</div>
+      <div class="lb-subtitle">GLOBAL RANKINGS</div>
+    </div>
+    <div class="lb-tabs">
+      <button class="lb-tab active" data-tab="global">GLOBAL</button>
+      <button class="lb-tab" data-tab="today">TODAY</button>
+      <button class="lb-tab" data-tab="myrank">MY RANK</button>
+    </div>
+    <div class="lb-list" id="lb-list">
+      <div class="lb-loading">Loading pilots...</div>
+    </div>
+    <div class="lb-footer-note">Scores are based on: Accuracy · Fuel · Speed · Level · Streak</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN: SETTINGS
+════════════════════════════════════ -->
+<div id="screen-settings" class="screen hidden">
+  <div class="settings-inner">
+    <div class="settings-header">
+      <button class="back-btn" id="btn-settings-back">← BACK</button>
+      <div class="settings-title">⚙ SETTINGS</div>
+    </div>
+    <div class="settings-body">
+      <div class="setting-group">
+        <div class="setting-group-label">AUDIO</div>
+        <div class="setting-row">
+          <span>Background Music</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggle-music" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="setting-row">
+          <span>Sound Effects</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggle-sfx" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="setting-row">
+          <span>Master Volume</span>
+          <input type="range" id="slider-volume" min="0" max="100" value="70" class="range-slider">
+        </div>
+      </div>
+      <div class="setting-group">
+        <div class="setting-group-label">DISPLAY</div>
+        <div class="setting-row">
+          <span>Scanlines Effect</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggle-scanlines" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="setting-row">
+          <span>Particles Intensity</span>
+          <select id="select-particles" class="setting-select">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+      </div>
+      <div class="setting-group">
+        <div class="setting-group-label">PILOT</div>
+        <div class="setting-row">
+          <span>Change Callsign</span>
+          <button class="btn-small" id="btn-change-name">EDIT</button>
+        </div>
+        <div class="setting-row">
+          <span>Reset Progress</span>
+          <button class="btn-small danger" id="btn-reset">RESET</button>
+        </div>
+      </div>
+      <div class="setting-group">
+        <div class="setting-group-label">ABOUT</div>
+        <div class="about-text">
+          LUNAR — Moon Lander v2.0<br>
+          Built with physics, precision, and passion.<br>
+          Laws of UX: Norman · Hook Model · Flow Theory
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN: GAME OVER (full session)
+════════════════════════════════════ -->
+<div id="screen-gameover" class="screen hidden">
+  <div class="go-inner">
+    <div class="go-icon">💥</div>
+    <div class="go-title">SESSION COMPLETE</div>
+    <div class="go-pilot" id="go-pilot-name">PILOT</div>
+    <div class="go-stats" id="go-stats"></div>
+    <div class="go-rank-block">
+      <div class="go-rank-label">YOUR RANK</div>
+      <div class="go-rank" id="go-rank">#—</div>
+      <div class="go-rank-title" id="go-rank-title">—</div>
+    </div>
+    <div class="go-actions">
+      <button class="btn-primary" id="btn-go-play">▶ FLY AGAIN</button>
+      <button class="btn-secondary" id="btn-go-lb">🏆 SEE LEADERBOARD</button>
+      <button class="btn-secondary" id="btn-go-home">⌂ HOME</button>
+    </div>
+  </div>
+</div>
+
+<!-- JS Modules -->
+<script src="js/audio.js"></script>
+<script src="js/stars.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/leaderboard.js"></script>
+<script src="js/profile.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/hud.js"></script>
+<script src="js/game.js"></script>
+<script src="js/screens.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

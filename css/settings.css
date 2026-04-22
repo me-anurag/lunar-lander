@@ -1,0 +1,56 @@
+/* ═══════════════════════════════════
+   settings.css
+═══════════════════════════════════ */
+
+#screen-settings {
+  justify-content: flex-start;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: max(20px, var(--safe-top)) 0 max(24px, var(--safe-bottom));
+}
+.settings-inner {
+  width: 100%; max-width: 480px;
+}
+.settings-header {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0 20px 20px;
+  position: relative;
+}
+.settings-header .back-btn {
+  position: absolute; left: 16px; top: 0;
+}
+.settings-title {
+  font-family: var(--font-hud);
+  font-size: clamp(16px, 5vw, 22px);
+  font-weight: 900; letter-spacing: 5px;
+  color: var(--bright); margin-top: 28px;
+}
+.settings-body {
+  padding: 0 20px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.setting-group {
+  background: rgba(0,212,255,.03);
+  border: 1px solid rgba(0,212,255,.08);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+.setting-group-label {
+  font-family: var(--font-hud);
+  font-size: 9px; letter-spacing: 4px;
+  color: var(--gold); margin-bottom: 14px;
+}
+.setting-row {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0,212,255,.04);
+  font-size: clamp(10px, 3vw, 12px);
+  color: var(--bright); letter-spacing: 1px;
+}
+.setting-row:last-child { border-bottom: none; padding-bottom: 0; }
+.setting-row:first-of-type { padding-top: 0; }
+.about-text {
+  font-size: clamp(9px, 2.5vw, 11px);
+  color: var(--dim); line-height: 1.9; letter-spacing: 1px;
+}

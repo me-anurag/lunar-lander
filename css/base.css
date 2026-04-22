@@ -1,0 +1,299 @@
+/* ════════════════════════════════════════
+   base.css — Design tokens & global resets
+════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap');
+
+:root {
+  /* Color Palette */
+  --void:    #020408;
+  --deep:    #050c14;
+  --panel:   rgba(5,12,24,0.92);
+  --blue:    #00d4ff;
+  --blue2:   #0090cc;
+  --gold:    #ffd166;
+  --gold2:   #ffaa33;
+  --green:   #06ffa5;
+  --green2:  #00cc80;
+  --red:     #ff4757;
+  --red2:    #cc2233;
+  --purple:  #a855f7;
+  --purple2: #7c3aed;
+  --bright:  #e8f4fd;
+  --dim:     #4a7a9b;
+  --dim2:    #2a4a6b;
+
+  /* Typography */
+  --font-hud:  'Orbitron', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-body: 'Exo 2', sans-serif;
+
+  /* Layout */
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left:   env(safe-area-inset-left, 0px);
+  --safe-right:  env(safe-area-inset-right, 0px);
+
+  /* Timing */
+  --trans-fast:   0.15s ease;
+  --trans-normal: 0.3s ease;
+  --trans-slow:   0.5s ease;
+  --bounce:       cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ─── Reset ─── */
+*, *::before, *::after {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--void);
+  font-family: var(--font-mono);
+  color: var(--bright);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ─── Background Atmosphere ─── */
+#star-canvas {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+}
+#scanlines {
+  position: fixed; inset: 0; z-index: 2; pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent, transparent 2px,
+    rgba(0,0,0,.025) 2px, rgba(0,0,0,.025) 4px
+  );
+  transition: opacity var(--trans-normal);
+}
+#scanlines.hidden { opacity: 0; }
+#nebula-bg {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(168,85,247,.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 80% 20%, rgba(0,212,255,.03) 0%, transparent 60%);
+}
+
+/* ─── Screen System ─── */
+.screen {
+  position: fixed; inset: 0; z-index: 10;
+  display: flex; flex-direction: column; align-items: center;
+  overflow: hidden;
+  transition: opacity var(--trans-slow), transform var(--trans-slow);
+}
+.screen.hidden {
+  opacity: 0; pointer-events: none; transform: scale(0.97);
+}
+.screen.active { opacity: 1; }
+.screen.slide-out {
+  opacity: 0; transform: translateX(-40px);
+}
+.screen.slide-in {
+  animation: slideIn 0.4s var(--bounce) forwards;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ─── Button System ─── */
+.btn-primary {
+  font-family: var(--font-hud);
+  font-size: clamp(11px, 3.2vw, 14px);
+  font-weight: 700;
+  letter-spacing: clamp(3px, 1.5vw, 5px);
+  color: var(--void);
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  border: none;
+  padding: clamp(14px, 4vw, 18px) clamp(28px, 8vw, 48px);
+  border-radius: 50px;
+  cursor: pointer;
+  position: relative; overflow: hidden;
+  box-shadow: 0 4px 28px rgba(0,212,255,.28);
+  transition: transform var(--trans-fast), box-shadow var(--trans-fast);
+  white-space: nowrap;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,.18);
+  transform: translateX(-100%);
+  transition: transform 0.4s;
+}
+.btn-primary:hover::before { transform: translateX(100%); }
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 36px rgba(0,212,255,.5);
+}
+.btn-primary:active { transform: scale(0.96); }
+
+.btn-primary.glow-btn {
+  animation: pulseGlow 2.8s ease-in-out infinite;
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 4px 28px rgba(0,212,255,.28); }
+  50%       { box-shadow: 0 6px 44px rgba(0,212,255,.55), 0 0 20px rgba(168,85,247,.3); }
+}
+
+.btn-secondary {
+  font-family: var(--font-hud);
+  font-size: clamp(9px, 2.5vw, 11px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--blue);
+  background: rgba(0,212,255,.07);
+  border: 1px solid rgba(0,212,255,.25);
+  padding: clamp(10px, 3vw, 14px) clamp(16px, 5vw, 28px);
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.btn-secondary:hover {
+  background: rgba(0,212,255,.15);
+  border-color: rgba(0,212,255,.5);
+  transform: translateY(-1px);
+}
+.btn-secondary:active { transform: scale(0.96); }
+
+.btn-small {
+  font-family: var(--font-hud);
+  font-size: 9px; letter-spacing: 2px;
+  color: var(--blue);
+  background: rgba(0,212,255,.08);
+  border: 1px solid rgba(0,212,255,.2);
+  padding: 6px 14px; border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.btn-small:hover { background: rgba(0,212,255,.18); }
+.btn-small.danger {
+  color: var(--red);
+  background: rgba(255,71,87,.08);
+  border-color: rgba(255,71,87,.2);
+}
+.btn-small.danger:hover { background: rgba(255,71,87,.18); }
+
+.back-btn {
+  font-family: var(--font-hud);
+  font-size: clamp(9px, 2.5vw, 11px);
+  letter-spacing: 2px;
+  color: var(--dim);
+  background: none; border: none;
+  cursor: pointer;
+  transition: color var(--trans-fast);
+  padding: 8px 4px;
+}
+.back-btn:hover { color: var(--bright); }
+
+/* ─── Key Legend ─── */
+.key-legend {
+  display: flex; gap: clamp(8px,3vw,14px);
+  flex-wrap: wrap; justify-content: center;
+}
+.key-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: clamp(9px, 2.5vw, 11px); color: var(--dim);
+}
+.key {
+  background: rgba(0,212,255,.1);
+  border: 1px solid rgba(0,212,255,.25);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: clamp(9px, 2.5vw, 11px);
+  color: var(--blue);
+}
+
+/* ─── Toggle Switch ─── */
+.toggle-switch {
+  position: relative; display: inline-block;
+  width: 44px; height: 24px; cursor: pointer;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0;
+  background: rgba(0,212,255,.12);
+  border: 1px solid rgba(0,212,255,.2);
+  border-radius: 12px;
+  transition: background var(--trans-fast);
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute; left: 3px; top: 3px;
+  width: 16px; height: 16px;
+  background: var(--dim);
+  border-radius: 50%;
+  transition: transform var(--trans-fast), background var(--trans-fast);
+}
+.toggle-switch input:checked + .toggle-slider {
+  background: rgba(0,212,255,.22);
+  border-color: rgba(0,212,255,.4);
+}
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+  background: var(--blue);
+  box-shadow: 0 0 8px rgba(0,212,255,.6);
+}
+
+/* ─── Range Slider ─── */
+.range-slider {
+  -webkit-appearance: none;
+  width: 120px; height: 4px;
+  background: rgba(0,212,255,.15);
+  border-radius: 2px; outline: none;
+  cursor: pointer;
+}
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 8px rgba(0,212,255,.5);
+  cursor: pointer;
+}
+
+/* ─── Select ─── */
+.setting-select {
+  background: rgba(0,212,255,.08);
+  border: 1px solid rgba(0,212,255,.2);
+  color: var(--bright);
+  font-family: var(--font-mono);
+  font-size: 11px; padding: 5px 10px;
+  border-radius: 8px; cursor: pointer;
+  outline: none;
+}
+
+/* ─── Philosophy Bar ─── */
+.philosophy-bar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 6px 14px;
+  padding-bottom: max(6px, var(--safe-bottom));
+  background: rgba(2,4,8,.5);
+  border-top: 1px solid rgba(0,212,255,.05);
+  font-size: clamp(7px,2vw,10px);
+  letter-spacing: 1px;
+  color: rgba(74,122,155,.45);
+  text-align: center; z-index: 6;
+  pointer-events: none;
+  transition: opacity var(--trans-slow);
+}
+
+/* ─── Keyframes ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes blink { 50% { opacity: .2; } }
+@keyframes spinIn {
+  from { transform: rotate(-180deg) scale(0); opacity: 0; }
+  to   { transform: rotate(0) scale(1); opacity: 1; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}

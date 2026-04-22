@@ -1,0 +1,257 @@
+/* ═══════════════════════════════════
+   game.css — In-Game UI
+═══════════════════════════════════ */
+
+/* ─── HUD ─── */
+#hud {
+  width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: nowrap;
+  padding: max(clamp(5px,1.5vw,9px), var(--safe-top)) clamp(6px,2.5vw,14px) clamp(5px,1.5vw,9px);
+  background: rgba(2,4,8,.9);
+  border-bottom: 1px solid rgba(0,212,255,.12);
+  backdrop-filter: blur(12px);
+  flex-shrink: 0; z-index: 20; gap: 4px; overflow: hidden;
+}
+.hud-home-btn {
+  font-size: clamp(14px,4vw,18px);
+  color: var(--dim);
+  background: none; border: none; cursor: pointer;
+  padding: 4px 6px;
+  transition: color var(--trans-fast);
+  flex-shrink: 0;
+}
+.hud-home-btn:hover { color: var(--bright); }
+
+.hud-group {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 1px; flex: 1; min-width: 0;
+}
+.hud-label {
+  font-size: clamp(6px,1.8vw,9px); letter-spacing: 1px; color: var(--dim); white-space: nowrap;
+}
+.hud-val {
+  font-family: var(--font-hud);
+  font-size: clamp(12px,3.8vw,19px); font-weight: 700;
+  color: var(--bright); transition: color var(--trans-normal); white-space: nowrap;
+}
+.hud-val.danger { color: var(--red); animation: blink .5s infinite; }
+.hud-val.warn   { color: var(--gold); }
+.hud-val.ok     { color: var(--green); }
+
+.hud-fuel-col {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2px; flex: 1; min-width: 0;
+}
+.fuel-bar-bg {
+  width: clamp(32px,9vw,72px); height: 5px;
+  background: rgba(255,255,255,.06);
+  border-radius: 3px; overflow: hidden;
+  border: 1px solid rgba(0,212,255,.1);
+}
+.fuel-bar-fill {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--green), var(--blue));
+  transition: width .1s linear, background .5s;
+}
+.level-badge {
+  font-family: var(--font-hud);
+  font-size: clamp(9px,2.2vw,11px); letter-spacing: 2px;
+  color: var(--purple);
+  background: rgba(168,85,247,.1);
+  border: 1px solid rgba(168,85,247,.25);
+  padding: 3px clamp(5px,1.8vw,10px); border-radius: 20px;
+  white-space: nowrap; flex-shrink: 0;
+}
+
+/* ─── Game Canvas ─── */
+#game-canvas {
+  display: block; width: 100%; flex: 1; min-height: 0;
+}
+
+/* ─── Streak Banner ─── */
+#streak-banner {
+  position: absolute;
+  top: clamp(50px,13vw,70px); left: 50%;
+  transform: translateX(-50%) translateY(-65px);
+  background: rgba(255,209,102,.12);
+  border: 1px solid rgba(255,209,102,.3);
+  border-radius: 40px; padding: 5px 16px;
+  font-family: var(--font-hud);
+  font-size: clamp(8px,2.5vw,11px); letter-spacing: 2px;
+  color: var(--gold); z-index: 25; white-space: nowrap;
+  transition: transform .5s var(--bounce), opacity .4s;
+  opacity: 0; pointer-events: none;
+}
+#streak-banner.show {
+  transform: translateX(-50%) translateY(0); opacity: 1;
+}
+
+/* ─── Combo Pop ─── */
+.combo-pop {
+  position: absolute;
+  font-family: var(--font-hud);
+  font-size: clamp(16px,6vw,28px); font-weight: 900;
+  pointer-events: none; z-index: 35;
+  animation: comboPop 1.2s ease forwards;
+  text-shadow: 0 0 18px currentColor;
+  transform: translateX(-50%);
+}
+@keyframes comboPop {
+  0%   { transform: translateX(-50%) translateY(0) scale(.6); opacity: 1; }
+  40%  { transform: translateX(-50%) translateY(-22px) scale(1.1); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(-65px) scale(.8); opacity: 0; }
+}
+
+/* ─── Landing Zone Pulse ─── */
+.lz-pulse-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(6,255,165,.4);
+  animation: lzPulse 1.5s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes lzPulse {
+  0%   { transform: scale(0); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* ─── Result Modal ─── */
+#msg-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 30; padding: 14px;
+  pointer-events: none;
+}
+#msg-overlay.active { pointer-events: auto; }
+#msg-box {
+  background: rgba(2,4,8,.94);
+  border: 1px solid rgba(0,212,255,.2);
+  border-radius: 18px;
+  padding: clamp(18px,5vw,36px) clamp(16px,5vw,40px);
+  text-align: center;
+  backdrop-filter: blur(20px);
+  width: 100%; max-width: 380px;
+  transform: scale(.82); opacity: 0;
+  transition: transform .4s var(--bounce), opacity .3s;
+}
+#msg-box.show { transform: scale(1); opacity: 1; }
+
+.msg-icon {
+  font-size: clamp(32px,10vw,50px); margin-bottom: 10px; line-height: 1;
+}
+.msg-title {
+  font-family: var(--font-hud);
+  font-size: clamp(16px,5.5vw,24px); font-weight: 900; margin-bottom: 7px;
+}
+.msg-sub {
+  font-size: clamp(10px,3vw,13px); color: var(--dim); line-height: 1.65; margin-bottom: 12px;
+}
+.msg-score {
+  font-family: var(--font-hud);
+  font-size: clamp(26px,9vw,40px); font-weight: 900; color: var(--gold); margin-bottom: 3px;
+}
+.msg-score-label {
+  font-size: clamp(8px,2.2vw,10px); letter-spacing: 3px; color: var(--dim); margin-bottom: 8px;
+}
+.msg-breakdown {
+  font-size: clamp(9px,2.5vw,11px); color: var(--dim);
+  margin-bottom: 14px; line-height: 1.8;
+}
+.msg-breakdown .bd-row {
+  display: flex; justify-content: space-between;
+  padding: 2px 8px;
+  border-bottom: 1px solid rgba(0,212,255,.05);
+}
+.msg-breakdown .bd-label { color: var(--dim); }
+.msg-breakdown .bd-val   { color: var(--bright); font-family: var(--font-hud); }
+
+.msg-btns {
+  display: flex; flex-direction: column; gap: 9px; align-items: center;
+}
+.btn-modal {
+  font-family: var(--font-hud);
+  font-size: clamp(9px,2.8vw,12px); font-weight: 700; letter-spacing: 3px;
+  color: var(--void);
+  background: linear-gradient(135deg, var(--green), var(--blue));
+  border: none; width: 100%; max-width: 240px;
+  padding: clamp(11px,3.5vw,15px) 0; border-radius: 40px;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  position: relative; z-index: 1;
+}
+.btn-modal:hover { transform: scale(1.04); box-shadow: 0 4px 22px rgba(6,255,165,.4); }
+.btn-modal:active { transform: scale(.96); }
+.btn-modal.secondary {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.15);
+  color: var(--dim);
+}
+.btn-modal.secondary:hover { box-shadow: none; border-color: rgba(255,255,255,.3); color: var(--bright); }
+.btn-modal.tertiary {
+  background: transparent;
+  border: 1px solid rgba(0,212,255,.15);
+  color: var(--blue2);
+  font-size: clamp(8px,2.2vw,10px); padding: 8px 0;
+}
+
+/* ─── Wind Indicator ─── */
+#wind-indicator {
+  position: absolute; top: 68px; right: 12px;
+  font-family: var(--font-hud);
+  font-size: 9px; letter-spacing: 2px;
+  color: rgba(0,212,255,.5); z-index: 15;
+  pointer-events: none;
+  display: none;
+}
+#wind-indicator.visible { display: block; }
+
+/* ─── Altitude Warning ─── */
+#altitude-warning {
+  position: absolute; bottom: 80px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-hud);
+  font-size: clamp(8px,2.5vw,11px); letter-spacing: 3px;
+  color: var(--red); z-index: 25;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s;
+  text-shadow: 0 0 12px rgba(255,71,87,.6);
+}
+#altitude-warning.show { opacity: 1; animation: blink 0.8s infinite; }
+
+/* ─── Touch Gamepad ─── */
+#touch-controls {
+  width: 100%; flex-shrink: 0;
+  display: none;
+  align-items: center; justify-content: space-between;
+  padding: 8px clamp(12px,5vw,28px);
+  padding-bottom: max(14px, var(--safe-bottom));
+  background: rgba(2,4,8,.8);
+  border-top: 1px solid rgba(0,212,255,.08);
+  backdrop-filter: blur(8px);
+  z-index: 20; gap: 10px;
+}
+.tc-group { display: flex; gap: 10px; align-items: center; }
+.tbtn {
+  width: clamp(54px,14vw,66px); height: clamp(54px,14vw,66px);
+  border-radius: 50%;
+  background: rgba(0,212,255,.08);
+  border: 2px solid rgba(0,212,255,.3);
+  color: var(--blue);
+  font-size: clamp(18px,5vw,22px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+  transition: background .08s, transform .08s;
+}
+.tbtn.pressed {
+  background: rgba(0,212,255,.28);
+  transform: scale(.91);
+}
+.tbtn.gold {
+  background: rgba(255,209,102,.08);
+  border-color: rgba(255,209,102,.35);
+  color: var(--gold);
+}
+.tbtn.gold.pressed { background: rgba(255,209,102,.28); }
