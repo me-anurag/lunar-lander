@@ -1,41 +1,15 @@
-/* ═══════════════════════════════════
-   profile.css — Pilot profile elements
-═══════════════════════════════════ */
-
-/* Achievement badge */
+/* profile.css v2.1 */
 .achievement-badge {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 10px;
-  border-radius: 20px;
+  padding: 4px 12px; border-radius: 20px;
   font-family: var(--font-hud);
-  font-size: 9px; letter-spacing: 2px;
+  font-size: clamp(10px, 2.5vw, 12px);
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  line-height: 1.3;
 }
-.achievement-badge.gold {
-  background: rgba(255,209,102,.1);
-  border: 1px solid rgba(255,209,102,.25);
-  color: var(--gold);
-}
-.achievement-badge.purple {
-  background: rgba(168,85,247,.1);
-  border: 1px solid rgba(168,85,247,.25);
-  color: var(--purple);
-}
-.achievement-badge.green {
-  background: rgba(6,255,165,.1);
-  border: 1px solid rgba(6,255,165,.25);
-  color: var(--green);
-}
-
-/* Profile XP bar */
-.xp-bar {
-  width: 100%; height: 3px;
-  background: rgba(0,212,255,.1);
-  border-radius: 2px; overflow: hidden;
-  margin-top: 4px;
-}
-.xp-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--blue), var(--purple));
-  border-radius: 2px;
-  transition: width 1s ease;
-}
+.achievement-badge.gold   { background: rgba(255,209,102,.1); border: 1px solid rgba(255,209,102,.25); color: var(--gold); }
+.achievement-badge.purple { background: rgba(168,85,247,.1);  border: 1px solid rgba(168,85,247,.25);  color: var(--purple); }
+.achievement-badge.green  { background: rgba(6,255,165,.1);   border: 1px solid rgba(6,255,165,.25);   color: var(--green); }
+.xp-bar { width: 100%; height: 3px; background: rgba(0,212,255,.1); border-radius: 2px; overflow: hidden; margin-top: 4px; }
+.xp-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--purple)); border-radius: 2px; transition: width 1s ease; }

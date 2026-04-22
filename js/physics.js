@@ -97,8 +97,9 @@ const Physics = (() => {
   }
 
   // Simulate one physics tick — returns new state
+  // NOTE: gameState is passed explicitly — G itself has no .gameState property
   function tick(G, keys, inputFlags) {
-    if (!G || G.gameState !== 'playing') return G;
+    if (!G) return G;
 
     const cfg = getLevelConfig(G.level);
     let { x, y, vx, vy, fuel, angle, time, wind, turb } = G;

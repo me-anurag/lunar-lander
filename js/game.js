@@ -61,8 +61,13 @@ const Game = (() => {
   // ── Initialize one level ──
   function _initLevel() {
     _resizeCanvas();
-    const W = canvas.width;
-    const H = canvas.height;
+    // Use CSS/logical dimensions for game coords — renderer scales internally for DPR
+    const hudEl = document.getElementById('hud');
+    const tcEl  = document.getElementById('touch-controls');
+    const hudH  = hudEl ? hudEl.getBoundingClientRect().height || 52 : 52;
+    const tcH   = isTouch ? (tcEl ? tcEl.getBoundingClientRect().height || 76 : 76) : 0;
+    const W = window.innerWidth;
+    const H = Math.max(180, window.innerHeight - hudH - tcH);
     const cfg = Physics.getLevelConfig(level);
 
     G = {
@@ -313,7 +318,10 @@ const Game = (() => {
     const hudH  = hudEl ? hudEl.getBoundingClientRect().height || 52 : 52;
     const tcH   = isTouch ? (tcEl ? tcEl.getBoundingClientRect().height || 76 : 76) : 0;
     Renderer.resize(hudH, tcH);
-    if (G) { G.W = canvas.width; G.H = canvas.height; }
+    // Use logical (CSS) dimensions for game coordinates — renderer handles DPR internally
+    const cssW = window.innerWidth;
+    const cssH = Math.max(180, window.innerHeight - hudH - tcH);
+    if (G) { G.W = cssW; G.H = cssH; }
   }
 
   // ── Touch Detection ──

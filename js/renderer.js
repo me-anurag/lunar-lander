@@ -17,8 +17,18 @@ const Renderer = (() => {
   function setParticleMul(m) { _particleMul = m; }
 
   function resize(hudH, tcH) {
-    canvas.width  = window.innerWidth;
-    canvas.height = Math.max(180, window.innerHeight - hudH - tcH);
+    // ── HD FIX: scale canvas by devicePixelRatio ──
+    const DPR = window.devicePixelRatio || 1;
+    const cssW = window.innerWidth;
+    const cssH = Math.max(180, window.innerHeight - hudH - tcH);
+    canvas.width  = cssW * DPR;
+    canvas.height = cssH * DPR;
+    canvas.style.width  = cssW + 'px';
+    canvas.style.height = cssH + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    // Store logical dimensions for game logic
+    canvas._logicalW = cssW;
+    canvas._logicalH = cssH;
   }
 
   function clearParticles() { parts = []; exh = []; }
@@ -162,7 +172,7 @@ const Renderer = (() => {
 
       // Label
       const fs = Math.max(8, Math.min(10, canvas.width * 0.022));
-      ctx.font = `${fs}px Share Tech Mono`;
+      ctx.font = `${fs}px JetBrains Mono`;
       ctx.fillStyle = `rgba(6,255,165,${0.6 * pulse})`;
       ctx.textAlign = 'center';
       ctx.fillText('LANDING ZONE', cx, pad.y - 12);
@@ -275,7 +285,7 @@ const Renderer = (() => {
     const str = Math.abs(G.wind * 1000).toFixed(0);
     const W = G.W;
     ctx.globalAlpha = 0.5;
-    ctx.font = '10px Share Tech Mono';
+    ctx.font = '10px JetBrains Mono';
     ctx.fillStyle = '#00d4ff';
     ctx.textAlign = dir > 0 ? 'left' : 'right';
     ctx.fillText(`WIND ${dir > 0 ? '→' : '←'} ${str}`, dir > 0 ? 10 : W - 10, 20);

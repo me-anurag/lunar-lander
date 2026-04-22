@@ -1,5 +1,8 @@
 /* ═══════════════════════════════════
    screens.css — Splash / Home / GameOver
+   FIXED: All fonts use proper Rajdhani sizing,
+   letter-spacing reduced (was too wide for Rajdhani),
+   line-height set everywhere
 ═══════════════════════════════════ */
 
 /* ─── SPLASH SCREEN ─── */
@@ -7,43 +10,50 @@
   justify-content: center;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: max(32px, var(--safe-top)) 16px max(24px, var(--safe-bottom));
+  padding: max(32px, var(--safe-top)) 20px max(24px, var(--safe-bottom));
   background: radial-gradient(ellipse at 50% 0%, rgba(0,212,255,.06) 0%, transparent 60%);
 }
 .splash-inner {
-  width: 100%; max-width: 440px;
+  width: 100%; max-width: 460px;
   display: flex; flex-direction: column; align-items: center;
   gap: 0;
 }
 .splash-badge {
   font-family: var(--font-hud);
-  font-size: clamp(7px, 2vw, 10px);
-  letter-spacing: clamp(3px, 2vw, 7px);
-  color: var(--blue); opacity: .6;
-  margin-bottom: 12px;
+  font-size: clamp(10px, 2.5vw, 13px);
+  font-weight: 500;
+  letter-spacing: 4px;
+  line-height: 1.4;
+  color: var(--blue); opacity: .7;
+  margin-bottom: 10px;
   animation: fadeUp .8s ease both;
 }
 .splash-logo {
   font-family: var(--font-hud);
-  font-size: clamp(56px, 18vw, 112px);
-  font-weight: 900; letter-spacing: -3px; line-height: 1;
+  font-size: clamp(64px, 20vw, 120px);
+  font-weight: 700;
+  letter-spacing: 6px;
+  line-height: 1;
   background: linear-gradient(135deg, #fff 0%, #00d4ff 45%, #a855f7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 28px rgba(0,212,255,.3));
+  filter: drop-shadow(0 0 28px rgba(0,212,255,.35));
   animation: fadeUp .8s ease .15s both;
 }
 .splash-tagline {
   font-family: var(--font-body);
-  font-size: clamp(10px,3vw,13px); font-weight: 300; letter-spacing: 3px;
-  color: var(--dim); margin-top: 6px;
+  font-size: clamp(12px, 3vw, 15px);
+  font-weight: 400;
+  letter-spacing: 2px;
+  line-height: 1.4;
+  color: var(--dim); margin-top: 8px;
   animation: fadeUp .8s ease .3s both;
 }
 .splash-divider {
   width: 110px; height: 1px;
   background: linear-gradient(90deg, transparent, var(--blue), transparent);
-  margin: 18px 0 22px;
+  margin: 20px 0 24px;
   animation: fadeUp .8s ease .4s both;
 }
 .splash-prompt {
@@ -53,7 +63,10 @@
 }
 .prompt-label {
   font-family: var(--font-hud);
-  font-size: clamp(7px, 2vw, 9px); letter-spacing: 4px;
+  font-size: clamp(10px, 2.5vw, 12px);
+  font-weight: 600;
+  letter-spacing: 3px;
+  line-height: 1.4;
   color: var(--gold); margin-bottom: -6px;
 }
 .pilot-input {
@@ -61,19 +74,24 @@
   background: rgba(0,212,255,.06);
   border: 1px solid rgba(0,212,255,.25);
   border-radius: 12px;
-  padding: clamp(12px,4vw,16px) 20px;
+  padding: clamp(13px,4vw,17px) 20px;
   color: var(--bright);
   font-family: var(--font-hud);
-  font-size: clamp(14px, 4vw, 18px);
+  font-size: clamp(16px, 4.5vw, 22px);
+  font-weight: 600;
   letter-spacing: 3px;
+  line-height: 1.3;
   text-align: center;
   outline: none;
   transition: border-color var(--trans-fast), box-shadow var(--trans-fast);
 }
-.pilot-input::placeholder { color: var(--dim); letter-spacing: 2px; }
+.pilot-input::placeholder {
+  color: var(--dim); letter-spacing: 1px;
+  font-weight: 400; font-size: clamp(13px, 3.5vw, 16px);
+}
 .pilot-input:focus {
   border-color: rgba(0,212,255,.6);
-  box-shadow: 0 0 20px rgba(0,212,255,.12);
+  box-shadow: 0 0 20px rgba(0,212,255,.14);
 }
 
 /* Avatar Grid */
@@ -83,13 +101,13 @@
   width: 100%;
 }
 .avatar-option {
-  width: clamp(42px, 12vw, 56px);
-  height: clamp(42px, 12vw, 56px);
+  width: clamp(44px, 12vw, 58px);
+  height: clamp(44px, 12vw, 58px);
   border-radius: 50%;
   border: 2px solid rgba(0,212,255,.15);
   background: rgba(0,212,255,.06);
   display: flex; align-items: center; justify-content: center;
-  font-size: clamp(20px, 6vw, 28px);
+  font-size: clamp(22px, 6vw, 30px);
   cursor: pointer;
   transition: all var(--trans-fast);
   position: relative;
@@ -108,15 +126,19 @@
 .avatar-option.selected::after {
   content: '✓';
   position: absolute; bottom: -3px; right: -3px;
-  width: 16px; height: 16px;
+  width: 17px; height: 17px;
   background: var(--blue); color: var(--void);
   border-radius: 50%;
-  font-size: 10px; font-weight: 900;
+  font-size: 10px; font-weight: 900; font-family: var(--font-body);
   display: flex; align-items: center; justify-content: center;
+  line-height: 1;
 }
 .splash-note {
-  font-size: clamp(8px, 2.2vw, 10px);
-  color: var(--dim2); letter-spacing: 1px;
+  font-family: var(--font-body);
+  font-size: clamp(10px, 2.5vw, 12px);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--dim2); letter-spacing: 0.5px;
   text-align: center; margin-top: 8px;
   animation: fadeUp .8s ease .7s both;
 }
@@ -126,30 +148,30 @@
   justify-content: flex-start;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: max(20px, var(--safe-top)) 16px 60px;
+  padding: max(20px, var(--safe-top)) 20px 60px;
 }
 .home-inner {
-  width: 100%; max-width: 500px;
+  width: 100%; max-width: 520px;
   display: flex; flex-direction: column; align-items: center;
-  gap: 16px;
+  gap: 18px;
   padding-bottom: 20px;
 }
 .home-header { width: 100%; }
 
 /* Pilot Card */
 .pilot-card {
-  display: flex; align-items: center; gap: 12px;
+  display: flex; align-items: center; gap: 14px;
   width: 100%;
   background: rgba(0,212,255,.04);
   border: 1px solid rgba(0,212,255,.1);
   border-radius: 16px;
-  padding: 12px 16px;
+  padding: 14px 18px;
   animation: fadeUp .6s ease both;
 }
 .pilot-avatar {
-  font-size: clamp(28px, 9vw, 38px);
-  width: clamp(50px, 14vw, 64px);
-  height: clamp(50px, 14vw, 64px);
+  font-size: clamp(26px, 8vw, 36px);
+  width: clamp(52px, 14vw, 66px);
+  height: clamp(52px, 14vw, 66px);
   border-radius: 50%;
   background: rgba(0,212,255,.08);
   border: 2px solid rgba(0,212,255,.2);
@@ -164,44 +186,58 @@
   border: 1px solid rgba(0,212,255,.15);
   animation: spinBorder 8s linear infinite;
 }
-@keyframes spinBorder {
-  to { transform: rotate(360deg); }
-}
+@keyframes spinBorder { to { transform: rotate(360deg); } }
 .pilot-info { flex: 1; min-width: 0; }
 .pilot-name {
   font-family: var(--font-hud);
-  font-size: clamp(13px, 4vw, 17px);
-  font-weight: 700; letter-spacing: 2px;
+  font-size: clamp(15px, 4.5vw, 20px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1.2;
   color: var(--bright);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .pilot-rank {
   font-family: var(--font-hud);
-  font-size: clamp(8px, 2.2vw, 10px);
-  letter-spacing: 3px; color: var(--gold);
+  font-size: clamp(10px, 2.5vw, 13px);
+  font-weight: 500;
+  letter-spacing: 2px;
+  line-height: 1.4;
+  color: var(--gold);
   margin-top: 3px;
 }
 .pilot-score-col { text-align: right; flex-shrink: 0; }
 .pilot-best-label {
-  font-size: 8px; letter-spacing: 2px; color: var(--dim);
+  font-family: var(--font-body);
+  font-size: clamp(9px, 2vw, 11px);
+  letter-spacing: 1px;
+  line-height: 1.4;
+  color: var(--dim);
 }
 .pilot-best {
   font-family: var(--font-hud);
-  font-size: clamp(16px, 5vw, 22px);
-  font-weight: 700; color: var(--gold);
+  font-size: clamp(18px, 5.5vw, 26px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--gold);
 }
 
 /* Home Title */
 .home-title-wrap { text-align: center; }
 .home-badge {
   font-family: var(--font-hud);
-  font-size: clamp(7px, 2vw, 9px); letter-spacing: 5px;
-  color: var(--blue); opacity: .6; margin-bottom: 6px;
+  font-size: clamp(9px, 2.2vw, 11px);
+  font-weight: 500;
+  letter-spacing: 4px;
+  line-height: 1.4;
+  color: var(--blue); opacity: .65; margin-bottom: 4px;
 }
 .home-logo {
   font-family: var(--font-hud);
-  font-size: clamp(36px, 12vw, 70px);
-  font-weight: 900; letter-spacing: -2px;
+  font-size: clamp(42px, 13vw, 78px);
+  font-weight: 700;
+  letter-spacing: 6px;
+  line-height: 1;
   background: linear-gradient(135deg, #fff 0%, #00d4ff 45%, #a855f7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -210,8 +246,11 @@
 }
 .home-sub {
   font-family: var(--font-body);
-  font-size: clamp(9px, 2.5vw, 11px); font-weight: 300;
-  letter-spacing: 3px; color: var(--dim);
+  font-size: clamp(11px, 2.8vw, 14px);
+  font-weight: 400;
+  letter-spacing: 2px;
+  line-height: 1.4;
+  color: var(--dim);
 }
 
 /* Laws Panel */
@@ -220,24 +259,31 @@
   background: rgba(0,212,255,.03);
   border: 1px solid rgba(0,212,255,.1);
   border-radius: 14px;
-  padding: clamp(12px,4vw,20px) clamp(14px,4vw,22px);
+  padding: clamp(14px,4vw,22px) clamp(16px,4vw,24px);
 }
 .laws-title {
   font-family: var(--font-hud);
-  font-size: clamp(7px, 2vw, 9px); letter-spacing: 4px;
-  color: var(--gold); margin-bottom: 10px;
+  font-size: clamp(10px, 2.5vw, 12px);
+  font-weight: 600;
+  letter-spacing: 3px;
+  line-height: 1.4;
+  color: var(--gold); margin-bottom: 12px;
 }
 .law {
-  display: flex; gap: 10px; margin-bottom: 7px;
-  font-size: clamp(10px, 2.8vw, 12px); color: #7fb3cc; line-height: 1.5;
+  display: flex; gap: 10px; margin-bottom: 8px;
+  font-family: var(--font-body);
+  font-size: clamp(11px, 3vw, 13px);
+  font-weight: 400;
+  line-height: 1.55;
+  color: #7fb3cc;
 }
 .law-num {
-  color: var(--blue); font-size: 9px;
-  min-width: 18px; margin-top: 2px; opacity: .7;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--blue);
+  min-width: 20px; margin-top: 2px; opacity: .7;
+  flex-shrink: 0;
 }
-
-/* Home Keys */
-.home-keys { margin: 4px 0; }
 
 /* Home Actions */
 .home-actions {
@@ -252,22 +298,24 @@
 #screen-gameover {
   justify-content: center;
   overflow-y: auto;
-  padding: max(32px, var(--safe-top)) 16px max(24px, var(--safe-bottom));
+  padding: max(32px, var(--safe-top)) 20px max(24px, var(--safe-bottom));
   background: radial-gradient(ellipse at 50% 30%, rgba(255,71,87,.04) 0%, transparent 60%);
 }
 .go-inner {
-  width: 100%; max-width: 440px;
+  width: 100%; max-width: 460px;
   display: flex; flex-direction: column; align-items: center;
   gap: 18px;
 }
 .go-icon {
-  font-size: clamp(48px, 15vw, 72px);
+  font-size: clamp(52px, 16vw, 78px);
   animation: spinIn .8s var(--bounce) both;
 }
 .go-title {
   font-family: var(--font-hud);
-  font-size: clamp(18px, 6vw, 28px);
-  font-weight: 900; letter-spacing: 4px;
+  font-size: clamp(22px, 7vw, 34px);
+  font-weight: 700;
+  letter-spacing: 4px;
+  line-height: 1.2;
   background: linear-gradient(135deg, var(--gold), var(--gold2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -275,8 +323,11 @@
 }
 .go-pilot {
   font-family: var(--font-hud);
-  font-size: clamp(12px, 4vw, 16px);
-  letter-spacing: 3px; color: var(--blue);
+  font-size: clamp(14px, 4vw, 18px);
+  font-weight: 600;
+  letter-spacing: 3px;
+  line-height: 1.3;
+  color: var(--blue);
 }
 .go-stats {
   width: 100%;
@@ -290,34 +341,48 @@
   display: flex; justify-content: space-between; align-items: center;
 }
 .go-stat-label {
-  font-size: clamp(9px, 2.5vw, 11px); color: var(--dim); letter-spacing: 2px;
+  font-family: var(--font-body);
+  font-size: clamp(11px, 2.8vw, 13px);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--dim); letter-spacing: 1px;
 }
 .go-stat-val {
   font-family: var(--font-hud);
-  font-size: clamp(12px, 3.5vw, 15px);
-  font-weight: 700; color: var(--bright);
+  font-size: clamp(14px, 4vw, 17px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--bright);
 }
 .go-rank-block {
   text-align: center;
-  padding: 20px 40px;
+  padding: 20px 48px;
   background: rgba(255,209,102,.04);
   border: 1px solid rgba(255,209,102,.15);
   border-radius: 20px;
 }
 .go-rank-label {
-  font-size: 9px; letter-spacing: 4px; color: var(--dim);
+  font-family: var(--font-body);
+  font-size: clamp(10px, 2.5vw, 12px);
+  letter-spacing: 3px;
+  line-height: 1.4;
+  color: var(--dim);
   margin-bottom: 8px;
 }
 .go-rank {
   font-family: var(--font-hud);
-  font-size: clamp(36px, 12vw, 56px);
-  font-weight: 900; color: var(--gold);
+  font-size: clamp(42px, 14vw, 64px);
+  font-weight: 700;
   line-height: 1;
+  color: var(--gold);
 }
 .go-rank-title {
   font-family: var(--font-hud);
-  font-size: clamp(10px, 3vw, 13px);
-  letter-spacing: 3px; color: var(--purple);
+  font-size: clamp(12px, 3.5vw, 16px);
+  font-weight: 600;
+  letter-spacing: 3px;
+  line-height: 1.3;
+  color: var(--purple);
   margin-top: 6px;
 }
 .go-actions {

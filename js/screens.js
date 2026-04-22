@@ -93,45 +93,24 @@ const ScreenManager = (() => {
 
   // ─── Leaderboard Tab Logic ───
   let _lbTab = 'global';
-  async function _loadLeaderboard(tab) {
+  function _loadLeaderboard(tab) {
     _lbTab = tab;
- 
-    // Highlight the active tab button
+    // Update tab active state
     document.querySelectorAll('.lb-tab').forEach(t => {
       t.classList.toggle('active', t.dataset.tab === tab);
     });
- 
     const pilot = Storage.loadPilot();
     const name  = pilot ? pilot.name : '';
- 
-    // Show spinner immediately — Supabase call may take ~200ms
-    const container = document.getElementById('lb-list');
-    if (container) {
-      container.innerHTML = '<div class="lb-loading">Loading pilots...</div>';
+    let entries;
+    if (tab === 'global') {
+      entries = Storage.getGlobalBoard();
+    } else if (tab === 'today') {
+      entries = Storage.getTodayBoard();
+    } else {
+      entries = Storage.getGlobalBoard();
     }
- 
-    try {
-      let entries;
- 
-      if (tab === 'today') {
-        entries = await Storage.getTodayBoard();   // ← MUST await (async)
-      } else {
-        entries = await Storage.getGlobalBoard();  // ← MUST await (async)
-      }
- 
-      Leaderboard.renderBoard(entries, name, tab);
-      setTimeout(Leaderboard.animateEntries, 50);
- 
-    } catch (e) {
-      console.error('[Leaderboard] load failed:', e);
-      if (container) {
-        container.innerHTML = `
-          <div class="lb-empty">
-            ⚠️ Could not reach the server.<br>
-            Check your internet connection and try again.
-          </div>`;
-      }
-    }
+    Leaderboard.renderBoard(entries, name, tab);
+    setTimeout(Leaderboard.animateEntries, 50);
   }
 
   // ─── Wire all buttons ───

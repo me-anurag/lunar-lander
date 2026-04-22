@@ -1,11 +1,21 @@
 /* ════════════════════════════════════════
-   base.css — Design tokens & global resets
+   base.css — Design tokens & global resets v2.1
+   FONTS FIXED: Rajdhani (wide, readable) + JetBrains Mono
+   HD: font-smoothing, text-rendering optimized
 ════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap');
+/*
+  Font strategy:
+  - Rajdhani: sci-fi aesthetic with PROPER x-height. Wide characters,
+    never looks compressed. Weight 600/700 for HUD is excellent.
+  - JetBrains Mono: purpose-built for readability. Perfect x-height,
+    clear numerals, crisp at 10px+. Replaces Share Tech Mono.
+  - Exo 2: kept for body text — good proportions at small sizes.
+*/
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&family=Exo+2:wght@300;400;500;600&display=swap');
 
 :root {
-  /* Color Palette */
+  /* ── Color Palette ── */
   --void:    #020408;
   --deep:    #050c14;
   --panel:   rgba(5,12,24,0.92);
@@ -23,18 +33,18 @@
   --dim:     #4a7a9b;
   --dim2:    #2a4a6b;
 
-  /* Typography */
-  --font-hud:  'Orbitron', sans-serif;
-  --font-mono: 'Share Tech Mono', monospace;
+  /* ── Typography ── */
+  --font-hud:  'Rajdhani', 'Exo 2', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
   --font-body: 'Exo 2', sans-serif;
 
-  /* Layout */
+  /* ── Layout safe areas ── */
   --safe-top:    env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left:   env(safe-area-inset-left, 0px);
   --safe-right:  env(safe-area-inset-right, 0px);
 
-  /* Timing */
+  /* ── Transitions ── */
   --trans-fast:   0.15s ease;
   --trans-normal: 0.3s ease;
   --trans-slow:   0.5s ease;
@@ -57,9 +67,15 @@ html, body {
   touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
+  /* ── HD text rendering ── */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'tnum' 1;
+  line-height: 1.45;
 }
 
-/* ─── Background Atmosphere ─── */
+/* ─── Background Layers ─── */
 #star-canvas {
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
 }
@@ -68,7 +84,7 @@ html, body {
   background: repeating-linear-gradient(
     0deg,
     transparent, transparent 2px,
-    rgba(0,0,0,.025) 2px, rgba(0,0,0,.025) 4px
+    rgba(0,0,0,.018) 2px, rgba(0,0,0,.018) 4px
   );
   transition: opacity var(--trans-normal);
 }
@@ -76,8 +92,8 @@ html, body {
 #nebula-bg {
   position: fixed; inset: 0; z-index: 1; pointer-events: none;
   background:
-    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(168,85,247,.04) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 35% at 80% 20%, rgba(0,212,255,.03) 0%, transparent 60%);
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(168,85,247,.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 80% 20%, rgba(0,212,255,.04) 0%, transparent 60%);
 }
 
 /* ─── Screen System ─── */
@@ -91,23 +107,19 @@ html, body {
   opacity: 0; pointer-events: none; transform: scale(0.97);
 }
 .screen.active { opacity: 1; }
-.screen.slide-out {
-  opacity: 0; transform: translateX(-40px);
-}
-.screen.slide-in {
-  animation: slideIn 0.4s var(--bounce) forwards;
-}
 @keyframes slideIn {
-  from { opacity: 0; transform: translateX(30px); }
+  from { opacity: 0; transform: translateX(28px); }
   to   { opacity: 1; transform: translateX(0); }
 }
+.screen.slide-in { animation: slideIn 0.38s var(--bounce) forwards; }
 
 /* ─── Button System ─── */
 .btn-primary {
   font-family: var(--font-hud);
-  font-size: clamp(11px, 3.2vw, 14px);
+  font-size: clamp(13px, 3.5vw, 17px);
   font-weight: 700;
-  letter-spacing: clamp(3px, 1.5vw, 5px);
+  letter-spacing: 2px;
+  line-height: 1.2;
   color: var(--void);
   background: linear-gradient(135deg, var(--blue), var(--purple));
   border: none;
@@ -143,9 +155,10 @@ html, body {
 
 .btn-secondary {
   font-family: var(--font-hud);
-  font-size: clamp(9px, 2.5vw, 11px);
-  font-weight: 700;
-  letter-spacing: 2px;
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  line-height: 1.2;
   color: var(--blue);
   background: rgba(0,212,255,.07);
   border: 1px solid rgba(0,212,255,.25);
@@ -163,11 +176,14 @@ html, body {
 
 .btn-small {
   font-family: var(--font-hud);
-  font-size: 9px; letter-spacing: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  line-height: 1.2;
   color: var(--blue);
   background: rgba(0,212,255,.08);
   border: 1px solid rgba(0,212,255,.2);
-  padding: 6px 14px; border-radius: 20px;
+  padding: 7px 16px; border-radius: 20px;
   cursor: pointer;
   transition: all var(--trans-fast);
 }
@@ -181,8 +197,10 @@ html, body {
 
 .back-btn {
   font-family: var(--font-hud);
-  font-size: clamp(9px, 2.5vw, 11px);
-  letter-spacing: 2px;
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 600;
+  letter-spacing: 1px;
+  line-height: 1.4;
   color: var(--dim);
   background: none; border: none;
   cursor: pointer;
@@ -198,14 +216,19 @@ html, body {
 }
 .key-item {
   display: flex; align-items: center; gap: 6px;
-  font-size: clamp(9px, 2.5vw, 11px); color: var(--dim);
+  font-size: clamp(11px, 2.8vw, 13px);
+  font-family: var(--font-body);
+  color: var(--dim);
+  line-height: 1.3;
 }
 .key {
   background: rgba(0,212,255,.1);
   border: 1px solid rgba(0,212,255,.25);
-  border-radius: 4px;
-  padding: 2px 7px;
-  font-size: clamp(9px, 2.5vw, 11px);
+  border-radius: 5px;
+  padding: 3px 8px;
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 2.5vw, 12px);
+  line-height: 1.3;
   color: var(--blue);
 }
 
@@ -263,7 +286,9 @@ html, body {
   border: 1px solid rgba(0,212,255,.2);
   color: var(--bright);
   font-family: var(--font-mono);
-  font-size: 11px; padding: 5px 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 6px 10px;
   border-radius: 8px; cursor: pointer;
   outline: none;
 }
@@ -275,9 +300,12 @@ html, body {
   padding-bottom: max(6px, var(--safe-bottom));
   background: rgba(2,4,8,.5);
   border-top: 1px solid rgba(0,212,255,.05);
-  font-size: clamp(7px,2vw,10px);
-  letter-spacing: 1px;
-  color: rgba(74,122,155,.45);
+  font-family: var(--font-body);
+  font-size: clamp(9px, 2vw, 11px);
+  font-weight: 300;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+  color: rgba(74,122,155,.5);
   text-align: center; z-index: 6;
   pointer-events: none;
   transition: opacity var(--trans-slow);
@@ -292,8 +320,4 @@ html, body {
 @keyframes spinIn {
   from { transform: rotate(-180deg) scale(0); opacity: 0; }
   to   { transform: rotate(0) scale(1); opacity: 1; }
-}
-@keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
 }
