@@ -94,7 +94,8 @@ const HUD = (() => {
   }
 
   function _fmt(n) {
-    return n >= 10000 ? (n/1000).toFixed(1)+'K' : String(n);
+    // New scoring is small (10–2000), never use K abbreviation
+    return String(n);
   }
 
   // Score modal
@@ -113,17 +114,23 @@ const HUD = (() => {
       title.textContent = perf ? 'PERFECT LANDING' : 'TOUCHDOWN';
       title.style.color = perf ? '#06ffa5' : '#00d4ff';
       sub.innerHTML     = `V: <b>${landVy.toFixed(2)}</b> m/s &nbsp;·&nbsp; H: <b>${landVx.toFixed(2)}</b> m/s<br>Streak ${streak} &nbsp;·&nbsp; ×${multi} multiplier`;
-      sc.textContent    = '+' + _fmt(score);
+      sc.textContent    = '+' + score;
       sc.style.color    = '#ffd166';
-      // Score breakdown
-      const baseScore = 1000 + Math.floor(fuelLeft * 10) + Math.max(0, 2000 - timeTaken * 2);
+      // New score breakdown — precision + fuel + time + bonuses
+      const precision  = Math.max(0, 10 - landVy * 3 - landVx * 2).toFixed(1);
+      const fuelPts    = Math.floor(fuelLeft / 10);
+      const timePts    = Math.max(0, 10 - Math.floor(timeTaken / 60));
       bd.innerHTML = `
-        <div class="bd-row"><span class="bd-label">BASE</span><span class="bd-val">${_fmt(baseScore)}</span></div>
-        <div class="bd-row"><span class="bd-label">MULTIPLIER</span><span class="bd-val">×${multi}</span></div>
-        ${perf ? '<div class="bd-row"><span class="bd-label">PERFECT BONUS</span><span class="bd-val">+2 MULTI</span></div>' : ''}
-        <div class="bd-row"><span class="bd-label">TOTAL THIS RUN</span><span class="bd-val">${_fmt(totalScore)}</span></div>
+        <div class="bd-row"><span class="bd-label">PRECISION</span><span class="bd-val">${precision} pts</span></div>
+        <div class="bd-row"><span class="bd-label">FUEL BONUS</span><span class="bd-val">+${fuelPts} pts</span></div>
+        <div class="bd-row"><span class="bd-label">TIME BONUS</span><span class="bd-val">+${timePts} pts</span></div>
+        <div class="bd-row"><span class="bd-label">STREAK ×${multi}</span><span class="bd-val">${perf ? '+15 PERFECT' : ''}</span></div>
+        <div class="bd-row" style="border-top:1px solid rgba(0,212,255,.15);margin-top:4px;padding-top:6px">
+          <span class="bd-label">SESSION TOTAL</span>
+          <span class="bd-val" style="color:var(--gold)">${totalScore}</span>
+        </div>
       `;
-      if (btnNext) btnNext.style.display = '';
+      if (btnNext) btnNext.style.display = 'none'; // auto-advance handles next
     } else {
       icon.textContent  = '💥';
       title.textContent = 'MISSION FAILED';

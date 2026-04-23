@@ -95,26 +95,29 @@ const Renderer = (() => {
   }
 
   // ── Draw Routines ──
-  function render(G, gameState, keys, inputFlags) {
+  function render(G, gameState, keys, inputFlags, asteroids) {
     if (!canvas || !ctx) return;
     const { W, H } = G;
     ctx.clearRect(0, 0, W, H);
 
-    // Subtle background gradient
+    // Level-themed background
+    const theme = G.bgTheme || { sky:'rgba(2,4,8,1)', horizon:'rgba(10,22,40,.5)', accent:'0,212,255' };
+    const ac = theme.accent;
     const bg = ctx.createLinearGradient(0, 0, 0, H);
-    bg.addColorStop(0, 'rgba(2,4,8,0)');
-    bg.addColorStop(1, 'rgba(10,22,40,.45)');
+    bg.addColorStop(0, theme.sky);
+    bg.addColorStop(1, theme.horizon);
     ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
 
-    // Distant moon glow
-    const mg = ctx.createRadialGradient(W*.82, H*.1, 0, W*.82, H*.1, 55);
-    mg.addColorStop(0, 'rgba(210,235,255,.07)');
+    // Atmospheric glow — color matches level accent
+    const mg = ctx.createRadialGradient(W*.82, H*.1, 0, W*.82, H*.1, 65);
+    mg.addColorStop(0, `rgba(${ac},.09)`);
     mg.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = mg;
-    ctx.beginPath(); ctx.arc(W*.82, H*.1, 55, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(W*.82, H*.1, 65, 0, Math.PI*2); ctx.fill();
 
-    _renderTerrain(G);
+    _renderTerrain(G, ac);
     _renderPads(G);
+    if (asteroids && asteroids.length) _renderAsteroids(asteroids, ac);
     _renderExhaust();
     if (gameState !== 'crashed') _renderLander(G, keys, inputFlags);
     _renderParticles();
@@ -123,8 +126,40 @@ const Renderer = (() => {
     tickParticles();
   }
 
-  function _renderTerrain(G) {
+  function _renderAsteroids(asteroids, ac) {
+    const t = Date.now() / 1000;
+    for (const a of asteroids) {
+      ctx.save();
+      ctx.translate(a.x, a.y);
+      ctx.rotate(a.rot);
+      // Irregular asteroid shape
+      ctx.beginPath();
+      const sides = 7;
+      for (let i = 0; i < sides; i++) {
+        const angle = (i / sides) * Math.PI * 2;
+        const jitter = 0.7 + 0.3 * Math.sin(i * 2.3);
+        const r = a.r * jitter;
+        if (i === 0) ctx.moveTo(Math.cos(angle)*r, Math.sin(angle)*r);
+        else         ctx.lineTo(Math.cos(angle)*r, Math.sin(angle)*r);
+      }
+      ctx.closePath();
+      const grad = ctx.createRadialGradient(0,0,0,0,0,a.r);
+      grad.addColorStop(0, `rgba(${ac},.12)`);
+      grad.addColorStop(0.6, 'rgba(60,40,30,.8)');
+      grad.addColorStop(1,   'rgba(30,20,15,.9)');
+      ctx.fillStyle = grad; ctx.fill();
+      ctx.strokeStyle = `rgba(${ac},.5)`; ctx.lineWidth = 1.5; ctx.stroke();
+      // Danger glow pulse
+      const pulse = 0.3 + 0.2 * Math.sin(t * 3 + a.x);
+      ctx.beginPath(); ctx.arc(0,0,a.r+4,0,Math.PI*2);
+      ctx.strokeStyle = `rgba(${ac},${pulse})`; ctx.lineWidth = 2; ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  function _renderTerrain(G, ac) {
     const { pts } = G.terrain;
+    ac = ac || '0,180,255';
     ctx.beginPath(); ctx.moveTo(0, G.H);
     for (const p of pts) ctx.lineTo(p.x, p.y);
     ctx.lineTo(G.W, G.H); ctx.closePath();
@@ -132,10 +167,10 @@ const Renderer = (() => {
     tg.addColorStop(0, 'rgba(14,32,55,.95)');
     tg.addColorStop(1, 'rgba(4,10,20,1)');
     ctx.fillStyle = tg; ctx.fill();
-    // Edge glow
+    // Edge glow with level color
     ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
     for (let j = 1; j < pts.length; j++) ctx.lineTo(pts[j].x, pts[j].y);
-    ctx.strokeStyle = 'rgba(0,180,255,.13)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.strokeStyle = `rgba(${ac},.18)`; ctx.lineWidth = 1.5; ctx.stroke();
   }
 
   function _renderPads(G) {
