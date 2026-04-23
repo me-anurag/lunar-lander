@@ -155,12 +155,24 @@ const Leaderboard = (() => {
 
   function _formatDate(ts) {
     if (!ts) return '';
-    const d = new Date(ts), now = new Date();
-    const h = (now - d) / 3600000;
-    if (h < 1)  return 'just now';
-    if (h < 24) return Math.floor(h) + 'h ago';
-    if (h < 48) return 'yesterday';
-    return `${d.getMonth()+1}/${d.getDate()}`;
+    const diffMs = Date.now() - ts;
+
+    // Guard against future timestamps (clock skew) — show "just now"
+    if (diffMs < 0) return 'just now';
+
+    const diffSec = diffMs / 1000;
+    const diffMin = diffMs / 60000;
+    const diffH   = diffMs / 3600000;
+
+    if (diffSec < 45)        return 'just now';
+    if (diffMin < 2)         return '1m ago';
+    if (diffMin < 60)        return Math.floor(diffMin) + 'm ago';
+    if (diffH < 2)           return '1h ago';
+    if (diffH < 24)          return Math.floor(diffH) + 'h ago';
+    if (diffH < 48)          return 'yesterday';
+    // More than 2 days: show actual date
+    const d = new Date(ts);
+    return `${d.getUTCDate()}/${d.getUTCMonth()+1}`;
   }
 
   function _esc(s) {
