@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#020408">
+<meta name="description" content="8 levels. Real leaderboard. The moon doesn't care about your excuses.">
+<meta property="og:title" content="LUNAR — Moon Lander">
+<meta property="og:description" content="8 levels. Real leaderboard. Can you reach Commander?">
+<title>LUNAR — Moon Lander</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ── STARFIELD ── -->
+<canvas id="star-canvas"></canvas>
+<div id="nebula"></div>
+<div id="scanlines"></div>
+
+<!-- ══════════════════════════════════════
+     SECTION 1 — HERO
+══════════════════════════════════════ -->
+<section id="hero">
+  <!-- Live demo canvas — autonomous lander runs here -->
+  <canvas id="demo-canvas"></canvas>
+
+  <!-- Live stats bar -->
+  <div id="live-bar">
+    <div class="live-dot"></div>
+    <span id="live-count">— pilots online</span>
+    <span class="live-sep">·</span>
+    <span id="live-latest">Loading scores...</span>
+  </div>
+
+  <!-- Hero content -->
+  <div id="hero-content">
+    <div id="hero-badge">MISSION CONTROL · OPEN TO ALL PILOTS</div>
+    <h1 id="hero-title">The moon doesn't care<br>about your excuses.</h1>
+    <p id="hero-sub">8 levels. Real leaderboard. Fuel runs out.<br>Can you land before it does?</p>
+    <div id="hero-actions">
+      <a href="index.html" id="btn-hero-play">
+        <span class="btn-play-inner">▶ LAUNCH NOW</span>
+      </a>
+      <div id="hero-meta">No account needed &nbsp;·&nbsp; Free forever &nbsp;·&nbsp; Real competition</div>
+    </div>
+  </div>
+
+  <!-- Scroll hint -->
+  <div id="scroll-hint">
+    <div class="scroll-arrow">↓</div>
+    <div class="scroll-label">See leaderboard</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 2 — LIVE LEADERBOARD PREVIEW
+══════════════════════════════════════ -->
+<section id="section-lb">
+  <div class="section-inner">
+    <div class="section-eyebrow">🔴 LIVE</div>
+    <h2 class="section-title">These pilots are already ahead of you.</h2>
+    <p class="section-sub">Real scores. Real pilots. Updated the moment they land.</p>
+
+    <div id="lb-preview">
+      <div class="lb-loading-msg">Connecting to mission control...</div>
+    </div>
+
+    <div id="lb-cta-row">
+      <a href="index.html" class="btn-secondary-link">Claim your spot on the board →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 3 — RANK LADDER (ASPIRATION)
+══════════════════════════════════════ -->
+<section id="section-ranks">
+  <div class="section-inner">
+    <div class="section-eyebrow">THE HIERARCHY</div>
+    <h2 class="section-title">Five ranks. Only one matters.</h2>
+    <p class="section-sub">Most pilots never leave CADET. Commander has been reached by fewer than 1% of players.</p>
+
+    <div id="rank-ladder">
+      <div class="rank-rung rung-commander">
+        <div class="rung-icon">⭐</div>
+        <div class="rung-info">
+          <div class="rung-title">COMMANDER</div>
+          <div class="rung-req">2,000+ pts · Requires level 7+, near-perfect landings</div>
+        </div>
+        <div class="rung-badge rare">RARE</div>
+      </div>
+      <div class="rank-connector"></div>
+      <div class="rank-rung rung-ace">
+        <div class="rung-icon">🚀</div>
+        <div class="rung-info">
+          <div class="rung-title">ACE PILOT</div>
+          <div class="rung-req">900+ pts · Level 5+ with consistent streaks</div>
+        </div>
+        <div class="rung-badge hard">HARD</div>
+      </div>
+      <div class="rank-connector"></div>
+      <div class="rank-rung rung-veteran">
+        <div class="rung-icon">🛸</div>
+        <div class="rung-info">
+          <div class="rung-title">VETERAN</div>
+          <div class="rung-req">400+ pts · Multiple sessions through level 4</div>
+        </div>
+        <div class="rung-badge medium">EARNED</div>
+      </div>
+      <div class="rank-connector"></div>
+      <div class="rank-rung rung-pilot">
+        <div class="rung-icon">🌙</div>
+        <div class="rung-info">
+          <div class="rung-title">PILOT</div>
+          <div class="rung-req">150+ pts · A few decent sessions</div>
+        </div>
+        <div class="rung-badge easy">REACHABLE</div>
+      </div>
+      <div class="rank-connector"></div>
+      <div class="rank-rung rung-cadet active-rung">
+        <div class="rung-icon">⚡</div>
+        <div class="rung-info">
+          <div class="rung-title">CADET</div>
+          <div class="rung-req">Where everyone starts. Where most stay.</div>
+        </div>
+        <div class="rung-badge you">YOU START HERE</div>
+      </div>
+    </div>
+
+    <a href="index.html" class="btn-secondary-link" style="margin-top:2rem;display:inline-block">Start climbing →</a>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 4 — HOW IT WORKS (MECHANICS)
+══════════════════════════════════════ -->
+<section id="section-how">
+  <div class="section-inner">
+    <div class="section-eyebrow">THE RULES</div>
+    <h2 class="section-title">Simple to start. Hard to master.</h2>
+    <p class="section-sub">Three things kill most pilots. Learn them before you fly.</p>
+
+    <div id="mechanics-grid">
+
+      <div class="mechanic-card">
+        <div class="mech-demo" id="mech-speed">
+          <div class="mech-vspeed">
+            <span class="mech-label">V-SPEED</span>
+            <span class="mech-val danger" id="mspeed-val">3.8</span>
+          </div>
+          <div class="mech-craft">🛸</div>
+          <div class="mech-pad-line"></div>
+          <div class="mech-verdict crash-verdict" id="mspeed-verdict">TOO FAST — CRASH</div>
+        </div>
+        <h3 class="mech-title">Speed kills</h3>
+        <p class="mech-desc">Land with vertical speed below 2.0 m/s or the craft disintegrates. Every meter of altitude costs fuel. Every second of delay adds speed.</p>
+      </div>
+
+      <div class="mechanic-card">
+        <div class="mech-demo" id="mech-fuel">
+          <div class="fuel-display">
+            <div class="fuel-bar-outer">
+              <div class="fuel-bar-inner" id="mfuel-bar"></div>
+            </div>
+            <span class="mech-val" id="mfuel-val">100%</span>
+          </div>
+          <div class="mech-craft">🛸</div>
+          <div class="mech-label" style="color:var(--gold)">FUEL REMAINING</div>
+          <div class="mech-verdict" id="mfuel-verdict" style="opacity:0">EMPTY</div>
+        </div>
+        <h3 class="mech-title">Fuel is finite</h3>
+        <p class="mech-desc">Every thruster burn costs. Boost costs 3× more. Run dry and you fall — no control, no second chances. Higher levels give you less.</p>
+      </div>
+
+      <div class="mechanic-card">
+        <div class="mech-demo" id="mech-streak">
+          <div class="streak-display">
+            <div class="streak-num" id="mstreak-num">0</div>
+            <div class="streak-label">STREAK</div>
+          </div>
+          <div class="streak-multipliers">
+            <div class="smult" id="sm1">×1</div>
+            <div class="smult" id="sm2">×2</div>
+            <div class="smult" id="sm3">×3</div>
+            <div class="smult" id="sm4">×4</div>
+          </div>
+          <div class="mech-label" style="color:var(--purple)">CHAIN LANDINGS</div>
+        </div>
+        <h3 class="mech-title">Streaks multiply</h3>
+        <p class="mech-desc">Land 5 times without crashing and every landing scores 4×. Break your streak and you start from zero. The leaderboard runs on streaks.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 5 — LEVEL PREVIEW
+══════════════════════════════════════ -->
+<section id="section-levels">
+  <div class="section-inner">
+    <div class="section-eyebrow">8 LEVELS</div>
+    <h2 class="section-title">It gets worse. That's the point.</h2>
+
+    <div id="level-cards">
+      <div class="level-card lc-easy">
+        <div class="lc-num">1–2</div>
+        <div class="lc-title">TRAINING</div>
+        <div class="lc-tags">
+          <span class="lc-tag">Wide pads</span>
+          <span class="lc-tag">Gentle gravity</span>
+          <span class="lc-tag">No wind</span>
+        </div>
+        <div class="lc-feel">You'll feel confident. That's a trap.</div>
+      </div>
+      <div class="level-card lc-med">
+        <div class="lc-num">3–5</div>
+        <div class="lc-title">DANGEROUS</div>
+        <div class="lc-tags">
+          <span class="lc-tag">Asteroids appear</span>
+          <span class="lc-tag">Wind kicks in</span>
+          <span class="lc-tag">Narrower pads</span>
+        </div>
+        <div class="lc-feel">This is where most pilots stop progressing.</div>
+      </div>
+      <div class="level-card lc-hard">
+        <div class="lc-num">6–7</div>
+        <div class="lc-title">BRUTAL</div>
+        <div class="lc-tags">
+          <span class="lc-tag">Turbulence</span>
+          <span class="lc-tag">Single pad</span>
+          <span class="lc-tag">8 asteroids</span>
+        </div>
+        <div class="lc-feel">Reaching here means something. Most don't.</div>
+      </div>
+      <div class="level-card lc-void">
+        <div class="lc-num">8</div>
+        <div class="lc-title">THE VOID</div>
+        <div class="lc-tags">
+          <span class="lc-tag">Max gravity</span>
+          <span class="lc-tag">48px pad</span>
+          <span class="lc-tag">Chaos</span>
+        </div>
+        <div class="lc-feel">Required for Commander. Few return.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 6 — FINAL CTA
+══════════════════════════════════════ -->
+<section id="section-cta">
+  <div class="section-inner cta-inner">
+    <div class="cta-stat" id="cta-pilot-count">Loading...</div>
+    <h2 id="cta-title">Your rank is unclaimed.<br>How long are you going to wait?</h2>
+    <p id="cta-sub">No account. No download. Just enter your callsign and fly.</p>
+    <a href="index.html" id="btn-cta-play">
+      <span class="btn-play-inner">▶ CLAIM YOUR RANK</span>
+    </a>
+    <div id="cta-no-login">⚡ No login required &nbsp;·&nbsp; 🌙 Real global leaderboard &nbsp;·&nbsp; 🔥 Instant multiplayer</div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer id="footer">
+  <div class="footer-logo">LUNAR</div>
+  <div class="footer-sub">Moon Lander · Built for pilots who don't quit</div>
+  <div class="footer-links">
+    <a href="index.html">Play Now</a>
+    <span>·</span>
+    <span id="footer-count">— pilots ranked</span>
+  </div>
+</footer>
+
+<script>
+/* ════════════════════════════════════════════
+   LANDING PAGE ENGINE
+   - Starfield
+   - Autonomous demo lander (hero canvas)
+   - Supabase live leaderboard
+   - Mechanic animations
+   - Scroll reveal
+════════════════════════════════════════════ */
+
+const SUPABASE_URL = "https://slgmriloxwueemhuoffz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_WSWQgBvACjvw-Fed_XwBnA_Qsw7sCxs";
+const REALTIME_WS  = SUPABASE_URL.replace('https://','wss://') + '/realtime/v1/websocket';
+
+// ── 1. STARFIELD ──────────────────────────
+const SC  = document.getElementById('star-canvas');
+const stx = SC.getContext('2d');
+let stars = [], shooting = [];
+
+function initStars() {
+  const DPR = window.devicePixelRatio || 1;
+  SC.width  = window.innerWidth  * DPR;
+  SC.height = window.innerHeight * DPR;
+  SC.style.width  = window.innerWidth  + 'px';
+  SC.style.height = window.innerHeight + 'px';
+  stx.setTransform(DPR,0,0,DPR,0,0);
+  stars = [];
+  for (let i = 0; i < 320; i++) {
+    stars.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 1.5 + 0.2,
+      tw: Math.random() * Math.PI * 2,
+      spd: Math.random() * 0.02 + 0.003,
+      col: ['#ffffff','#c8e8ff','#ffeedd','#e8e8ff'][Math.floor(Math.random()*4)]
+    });
+  }
+}
+
+function drawStars() {
+  const W = window.innerWidth, H = window.innerHeight;
+  stx.clearRect(0,0,W,H);
+  for (const s of stars) {
+    s.tw += s.spd;
+    stx.globalAlpha = 0.35 + 0.65 * Math.abs(Math.sin(s.tw));
+    stx.beginPath(); stx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    stx.fillStyle = s.col; stx.fill();
+  }
+  // Shooting stars
+  if (Math.random() < 0.003) {
+    shooting.push({ x: Math.random()*W, y: Math.random()*H*0.4, vx:9+Math.random()*6, vy:3+Math.random()*3, life:1, len:55+Math.random()*35 });
+  }
+  for (let i = shooting.length-1; i>=0; i--) {
+    const s = shooting[i];
+    s.x+=s.vx; s.y+=s.vy; s.life-=0.025;
+    if (s.life<=0) { shooting.splice(i,1); continue; }
+    const g = stx.createLinearGradient(s.x-s.vx*4,s.y-s.vy*4,s.x,s.y);
+    g.addColorStop(0,'rgba(255,255,255,0)');
+    g.addColorStop(1,`rgba(200,240,255,${s.life*0.85})`);
+    stx.globalAlpha = s.life;
+    stx.strokeStyle = g; stx.lineWidth = 1.5;
+    stx.beginPath(); stx.moveTo(s.x-s.len*(s.vx/10),s.y-s.len*(s.vy/10)); stx.lineTo(s.x,s.y); stx.stroke();
+  }
+  stx.globalAlpha = 1;
+}
+initStars();
+window.addEventListener('resize', initStars);
+
+// ── 2. DEMO LANDER (autonomous AI pilot) ────────
+const DC  = document.getElementById('demo-canvas');
+const dct = DC.getContext('2d');
+let DPR   = 1;
+let demo  = {};
+let demoPads     = [];
+let demoTerrain  = [];
+let demoState    = 'flying'; // flying | landing | exploding | resetting
+let demoTimer    = 0;
+let demoExhaust  = [];
+let demoParts    = [];
+let demoPhase    = 0; // which scripted behavior
+
+function initDemo() {
+  DPR = window.devicePixelRatio || 1;
+  const W = DC.offsetWidth, H = DC.offsetHeight;
+  DC.width  = W * DPR; DC.height = H * DPR;
+  DC.style.width = W+'px'; DC.style.height = H+'px';
+  dct.setTransform(DPR,0,0,DPR,0,0);
+  _buildDemoScene(W,H);
+}
+
+function _buildDemoScene(W,H) {
+  // Simple terrain
+  demoTerrain = [];
+  const segs = 20, sw = W/segs;
+  for (let i=0; i<=segs; i++) {
+    demoTerrain.push({
+      x: i*sw,
+      y: H*0.65 + Math.sin(i*0.8)*18 + Math.cos(i*1.3)*12 + (Math.random()-0.5)*20
+    });
+  }
+  // One landing pad — center stage
+  const padSeg = Math.floor(segs*0.45);
+  const padW   = 100;
+  const padY   = demoTerrain[padSeg].y;
+  for (let i=padSeg-1; i<=padSeg+2; i++) if(demoTerrain[i]) demoTerrain[i].y = padY;
+  demoPads = [{ x: padSeg*sw - padW/2 + sw, y: padY, w: padW }];
+
+  // Demo craft starting position — scripted phases
+  _resetDemoCraft(W, H);
+}
+
+function _resetDemoCraft(W, H) {
+  // Alternate between: perfect landing, near-miss, crash
+  demoPhase = (demoPhase + 1) % 3;
+  demo = {
+    x: W * (0.25 + Math.random() * 0.5),
+    y: H * 0.05,
+    vx: (Math.random()-0.5) * 1.5,
+    vy: 0.15,
+    angle: 0, fuel: 100,
+    W, H, lw: 24, lh: 18
+  };
+  demoState  = 'flying';
+  demoTimer  = 0;
+  demoExhaust = [];
+  demoParts   = [];
+}
+
+function _terrainY(x) {
+  const sw = DC.offsetWidth / 20;
+  const i  = Math.floor(x / sw);
+  if (i < 0) return demoTerrain[0]?.y || 300;
+  if (i >= demoTerrain.length-1) return demoTerrain[demoTerrain.length-1]?.y || 300;
+  const frac = (x - demoTerrain[i].x) / sw;
+  return demoTerrain[i].y + (demoTerrain[i+1].y - demoTerrain[i].y)*frac;
+}
+
+function _overPad(x) {
+  return demoPads.find(p => x >= p.x && x <= p.x+p.w);
+}
+
+function updateDemo() {
+  if (demoState === 'flying') {
+    // AI pilot behavior — guide toward pad
+    const pad    = demoPads[0];
+    const padCX  = pad.x + pad.w/2;
+    const ground = _terrainY(demo.x);
+    const alt    = ground - demo.y;
+
+    // Gravity
+    demo.vy += 0.04;
+
+    // AI: thrust when descending too fast
+    const thrusting = demo.vy > 0.8 && alt < demo.H * 0.65;
+    if (thrusting && demo.fuel > 0) { demo.vy -= 0.12; demo.fuel -= 0.2; }
+
+    // AI: steer toward pad
+    const dx = padCX - demo.x;
+    if (Math.abs(dx) > 12) { demo.vx += (dx > 0 ? -1 : 1) * -0.05; }
+    demo.vx *= 0.98;
+
+    // Wall bounce
+    if (demo.x < 20)         { demo.x = 20;          demo.vx = Math.abs(demo.vx)*0.5; }
+    if (demo.x > demo.W-20)  { demo.x = demo.W-20;   demo.vx = -Math.abs(demo.vx)*0.5; }
+
+    demo.x += demo.vx; demo.y += demo.vy;
+    demo.angle = Math.max(-30, Math.min(30, demo.vx * 10));
+
+    // Exhaust
+    if (thrusting) {
+      for (let i=0; i<3; i++) {
+        demoExhaust.push({
+          x:demo.x+(Math.random()-0.5)*6, y:demo.y+demo.lh/2,
+          vx:(Math.random()-0.5)*1.2, vy:Math.random()*2+0.5,
+          life:1, sz:1.5+Math.random()*2,
+          col:['#00d4ff','#a855f7','#fff'][Math.floor(Math.random()*3)]
+        });
+      }
+    }
+
+    // Collision
+    if (demo.y + demo.lh/2 >= ground) {
+      const onPad = _overPad(demo.x);
+      if (onPad && demo.vy < 2.5 && Math.abs(demo.vx) < 2.0) {
+        // LANDING
+        demoState = 'landing'; demoTimer = 90; // hold 1.5s
+        _spawnLandParticles();
+      } else {
+        // CRASH
+        demoState = 'exploding'; demoTimer = 120;
+        _spawnCrashParticles(demo.x, ground);
+      }
+    }
+  } else if (demoState === 'landing' || demoState === 'exploding') {
+    demoTimer--;
+    if (demoTimer <= 0) {
+      demoState = 'resetting'; demoTimer = 40;
+    }
+  } else if (demoState === 'resetting') {
+    demoTimer--;
+    if (demoTimer <= 0) _resetDemoCraft(DC.offsetWidth, DC.offsetHeight);
+  }
+
+  // Tick particles
+  for (let i=demoExhaust.length-1; i>=0; i--) {
+    const e=demoExhaust[i]; e.x+=e.vx; e.y+=e.vy; e.life-=0.07;
+    if(e.life<=0) demoExhaust.splice(i,1);
+  }
+  for (let i=demoParts.length-1; i>=0; i--) {
+    const p=demoParts[i]; p.x+=p.vx; p.y+=p.vy; p.vy+=0.1; p.life-=p.dec;
+    if(p.life<=0) demoParts.splice(i,1);
+  }
+}
+
+function _spawnLandParticles() {
+  for (let i=0; i<40; i++) {
+    demoParts.push({
+      x:demo.x, y:demo.y+demo.lh/2,
+      vx:(Math.random()-0.5)*5, vy:-Math.random()*4-0.5,
+      life:1, dec:0.016, sz:2+Math.random()*3,
+      col:['#06ffa5','#00d4ff','#ffd166','#fff'][Math.floor(Math.random()*4)]
+    });
+  }
+}
+
+function _spawnCrashParticles(x,y) {
+  for (let i=0; i<60; i++) {
+    demoParts.push({
+      x, y,
+      vx:(Math.random()-0.5)*8, vy:-Math.random()*6,
+      life:1, dec:0.012, sz:2+Math.random()*4.5,
+      col:['#ff4757','#ffd166','#ff6b35','#fff'][Math.floor(Math.random()*4)]
+    });
+  }
+}
+
+function drawDemo() {
+  const W = DC.offsetWidth, H = DC.offsetHeight;
+  dct.clearRect(0,0,W,H);
+
+  // Subtle ground glow
+  const gg = dct.createLinearGradient(0,H*0.55,0,H);
+  gg.addColorStop(0,'rgba(0,212,255,0.03)');
+  gg.addColorStop(1,'rgba(0,212,255,0)');
+  dct.fillStyle = gg; dct.fillRect(0,H*0.55,W,H*0.45);
+
+  // Terrain
+  if (demoTerrain.length) {
+    dct.beginPath(); dct.moveTo(0,H);
+    for (const p of demoTerrain) dct.lineTo(p.x, p.y);
+    dct.lineTo(W,H); dct.closePath();
+    const tg = dct.createLinearGradient(0,H*0.5,0,H);
+    tg.addColorStop(0,'rgba(14,32,55,0.95)'); tg.addColorStop(1,'rgba(4,10,20,1)');
+    dct.fillStyle = tg; dct.fill();
+    dct.beginPath(); dct.moveTo(demoTerrain[0].x,demoTerrain[0].y);
+    for(let i=1;i<demoTerrain.length;i++) dct.lineTo(demoTerrain[i].x,demoTerrain[i].y);
+    dct.strokeStyle='rgba(0,180,255,0.2)'; dct.lineWidth=1.5; dct.stroke();
+  }
+
+  // Landing pad
+  const t = Date.now()/1000;
+  for (const p of demoPads) {
+    const cx = p.x+p.w/2, pulse = 0.55+0.45*Math.sin(t*2.2);
+    const pg = dct.createLinearGradient(p.x,0,p.x+p.w,0);
+    pg.addColorStop(0,'rgba(6,255,165,0)');
+    pg.addColorStop(0.2,`rgba(6,255,165,${0.9*pulse})`);
+    pg.addColorStop(0.8,`rgba(6,255,165,${0.9*pulse})`);
+    pg.addColorStop(1,'rgba(6,255,165,0)');
+    dct.fillStyle=pg; dct.fillRect(p.x,p.y-2,p.w,3);
+    const hg=dct.createRadialGradient(cx,p.y,0,cx,p.y,p.w*0.7);
+    hg.addColorStop(0,`rgba(6,255,165,${0.08*pulse})`); hg.addColorStop(1,'rgba(6,255,165,0)');
+    dct.fillStyle=hg; dct.fillRect(p.x-20,p.y-20,p.w+40,40);
+    const fs=Math.max(8,Math.min(10,W*0.022));
+    dct.font=`${fs}px 'JetBrains Mono', monospace`;
+    dct.fillStyle=`rgba(6,255,165,${0.6*pulse})`;
+    dct.textAlign='center'; dct.fillText('LANDING ZONE',cx,p.y-10);
+  }
+
+  // Exhaust
+  for (const e of demoExhaust) {
+    dct.globalAlpha=e.life*0.7;
+    dct.beginPath(); dct.arc(e.x,e.y,e.sz,0,Math.PI*2);
+    dct.fillStyle=e.col; dct.fill();
+  }
+  dct.globalAlpha=1;
+
+  // Lander (only when flying or just landed)
+  if (demoState === 'flying' || demoState === 'landing') {
+    dct.save();
+    dct.translate(demo.x, demo.y);
+    dct.rotate(demo.angle*Math.PI/180);
+    const {lw,lh} = demo;
+    // Legs
+    dct.strokeStyle='rgba(0,200,255,0.7)'; dct.lineWidth=2;
+    dct.beginPath(); dct.moveTo(-lw/2,lh/3); dct.lineTo(-lw*0.9,lh/2+4); dct.lineTo(-lw*1.1,lh/2+4); dct.stroke();
+    dct.beginPath(); dct.moveTo(lw/2,lh/3);  dct.lineTo(lw*0.9,lh/2+4);  dct.lineTo(lw*1.1,lh/2+4);  dct.stroke();
+    // Body
+    dct.beginPath(); dct.roundRect(-lw/2,-lh/2,lw,lh,5);
+    const bg=dct.createLinearGradient(0,-lh/2,0,lh/2);
+    bg.addColorStop(0,'rgba(0,212,255,0.9)'); bg.addColorStop(0.5,'rgba(0,138,208,0.8)'); bg.addColorStop(1,'rgba(0,68,148,0.9)');
+    dct.fillStyle=bg; dct.fill();
+    dct.strokeStyle='rgba(0,255,255,0.75)'; dct.lineWidth=1.5; dct.stroke();
+    // Porthole
+    dct.beginPath(); dct.arc(0,-2,5,0,Math.PI*2);
+    dct.fillStyle='rgba(180,240,255,0.9)'; dct.fill();
+    // Landing state glow
+    if (demoState==='landing') {
+      dct.beginPath(); dct.arc(0,0,lw*1.5,0,Math.PI*2);
+      dct.strokeStyle=`rgba(6,255,165,${0.3+0.2*Math.sin(t*8)})`; dct.lineWidth=2; dct.stroke();
+    }
+    dct.restore();
+  }
+
+  // Particles
+  for (const p of demoParts) {
+    dct.globalAlpha=p.life;
+    dct.beginPath(); dct.arc(p.x,p.y,p.sz,0,Math.PI*2);
+    dct.fillStyle=p.col; dct.fill();
+  }
+  dct.globalAlpha=1;
+}
+
+// ── 3. LIVE LEADERBOARD FROM SUPABASE ────────
+let _boardCache = [];
+let _realtimeWS = null;
+
+async function fetchBoard() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/scores?select=name,avatar,score,level,streak,created_at&order=score.desc&limit=5`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    );
+    if (!res.ok) return [];
+    const rows = await res.json();
+    return rows.map(r => ({
+      name:   r.name   || 'UNKNOWN',
+      avatar: r.avatar || '🚀',
+      score:  r.score  || 0,
+      level:  r.level  || 1,
+      streak: r.streak || 0,
+      date:   r.created_at
+                ? new Date( /[Z+]/.test(r.created_at.slice(-6)) ? r.created_at : r.created_at+'Z' ).getTime()
+                : Date.now()
+    }));
+  } catch(e) { return []; }
+}
+
+async function fetchTotalPilots() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/scores?select=count`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact', 'Range': '0-0' } }
+    );
+    const cr  = res.headers.get('Content-Range') || '';
+    const match = cr.match(/\/(\d+)/);
+    return match ? parseInt(match[1]) : null;
+  } catch(e) { return null; }
+}
+
+function _fmt(n) { return n >= 1000 ? (n/1000).toFixed(1)+'K' : String(n); }
+
+function _formatDate(ts) {
+  const diff = Date.now() - ts;
+  if (diff < 0)      return 'just now';
+  if (diff < 45000)  return 'just now';
+  if (diff < 120000) return '1m ago';
+  if (diff < 3600000) return Math.floor(diff/60000)+'m ago';
+  if (diff < 7200000) return '1h ago';
+  if (diff < 86400000) return Math.floor(diff/3600000)+'h ago';
+  return Math.floor(diff/86400000)+'d ago';
+}
+
+function _rankColor(score) {
+  if (score >= 2000) return '#ffd166';
+  if (score >= 900)  return '#a855f7';
+  if (score >= 400)  return '#06ffa5';
+  if (score >= 150)  return '#00d4ff';
+  return '#4a7a9b';
+}
+
+function _rankTitle(score) {
+  if (score >= 2000) return '⭐ COMMANDER';
+  if (score >= 900)  return '🚀 ACE PILOT';
+  if (score >= 400)  return '🛸 VETERAN';
+  if (score >= 150)  return '🌙 PILOT';
+  return '⚡ CADET';
+}
+
+const MEDALS = {1:'🥇',2:'🥈',3:'🥉'};
+
+function renderBoard(board) {
+  const container = document.getElementById('lb-preview');
+  if (!container) return;
+  if (!board || board.length === 0) {
+    container.innerHTML = '<div class="lb-loading-msg">Be the first pilot on the board.</div>';
+    return;
+  }
+  container.innerHTML = board.map((e,i) => {
+    const rank  = i+1;
+    const medal = MEDALS[rank] || `#${rank}`;
+    const rc    = _rankColor(e.score);
+    return `
+      <div class="lb-row" style="--rc:${rc}">
+        <div class="lb-rank">${medal}</div>
+        <div class="lb-avatar">${e.avatar}</div>
+        <div class="lb-info">
+          <div class="lb-name">${e.name}</div>
+          <div class="lb-meta">${_rankTitle(e.score)} · LVL ${e.level} · ${_formatDate(e.date)}</div>
+        </div>
+        <div class="lb-score" style="color:${rc}">${e.score}</div>
+      </div>`;
+  }).join('');
+}
+
+function updateLiveBar(board, total) {
+  const count = document.getElementById('live-count');
+  const latest = document.getElementById('live-latest');
+  const footer = document.getElementById('footer-count');
+  const ctaStat = document.getElementById('cta-pilot-count');
+
+  // Estimate "online" as pilots who scored in last 10 min
+  const online = board.filter(e => Date.now() - e.date < 600000).length;
+  if (count) count.textContent = online > 0
+    ? `${online} pilot${online>1?'s':''} active recently`
+    : 'Global leaderboard live';
+
+  if (latest && board.length > 0) {
+    const top = board[0];
+    latest.textContent = `${top.avatar} ${top.name} leads with ${top.score} pts`;
+  }
+
+  if (footer && total !== null) footer.textContent = `${total} pilot${total!==1?'s':''} ranked`;
+
+  if (ctaStat) {
+    if (total !== null && total > 0) {
+      ctaStat.textContent = `${total} pilot${total!==1?'s':''} have already claimed their rank.`;
+    } else {
+      ctaStat.textContent = 'Be the first pilot on the global board.';
+    }
+  }
+}
+
+function connectRealtime() {
+  try {
+    const ws = new WebSocket(`${REALTIME_WS}?apikey=${SUPABASE_KEY}&vsn=1.0.0`);
+    _realtimeWS = ws;
+    ws.onopen = () => {
+      ws.send(JSON.stringify({
+        topic: 'realtime:public:scores', event: 'phx_join',
+        payload: { config: { postgres_changes: [{ event:'*', schema:'public', table:'scores' }] } },
+        ref: '1'
+      }));
+      setInterval(() => {
+        if(ws.readyState===1) ws.send(JSON.stringify({topic:'phoenix',event:'heartbeat',payload:{},ref:null}));
+      }, 25000);
+    };
+    ws.onmessage = async (ev) => {
+      try {
+        const msg = JSON.parse(ev.data);
+        if (msg.event === 'postgres_changes') {
+          // Live score change — refetch top 5
+          const board = await fetchBoard();
+          _boardCache = board;
+          renderBoard(board);
+          const total = await fetchTotalPilots();
+          updateLiveBar(board, total);
+          // Flash the live indicator
+          const dot = document.querySelector('.live-dot');
+          if (dot) { dot.style.transform='scale(2)'; setTimeout(()=>dot.style.transform='',400); }
+        }
+      } catch(e) {}
+    };
+    ws.onclose = () => { setTimeout(connectRealtime, 5000); };
+  } catch(e) {}
+}
+
+async function initLeaderboard() {
+  const [board, total] = await Promise.all([fetchBoard(), fetchTotalPilots()]);
+  _boardCache = board;
+  renderBoard(board);
+  updateLiveBar(board, total);
+  connectRealtime();
+}
+
+// ── 4. MECHANIC ANIMATIONS ────────────────
+function animateSpeedMechanic() {
+  const val = document.getElementById('mspeed-val');
+  const verdict = document.getElementById('mspeed-verdict');
+  if (!val || !verdict) return;
+  let v = 0.2, dir = 1, crashed = false;
+  setInterval(() => {
+    if (crashed) { v=0.2; crashed=false; verdict.textContent=''; verdict.style.opacity='0'; val.className='mech-val ok'; }
+    v += dir * 0.08;
+    if (v >= 4.0) { crashed=true; dir=-1; verdict.textContent='TOO FAST — CRASH 💥'; verdict.style.opacity='1'; verdict.className='mech-verdict crash-verdict'; }
+    if (v <= 0.2) dir=1;
+    val.textContent = v.toFixed(1);
+    val.className = v>2.5 ? 'mech-val danger' : v>1.5 ? 'mech-val warn' : 'mech-val ok';
+  }, 120);
+}
+
+function animateFuelMechanic() {
+  const bar = document.getElementById('mfuel-bar');
+  const val = document.getElementById('mfuel-val');
+  const verdict = document.getElementById('mfuel-verdict');
+  if (!bar||!val||!verdict) return;
+  let fuel = 100;
+  setInterval(() => {
+    fuel -= 1.2;
+    if (fuel <= 0) { fuel = 100; verdict.style.opacity='0'; }
+    const pct = Math.max(0,fuel);
+    bar.style.width = pct+'%';
+    bar.style.background = pct<15 ? 'linear-gradient(90deg,#ff4757,#ff6b6b)' : pct<30 ? 'linear-gradient(90deg,#ffd166,#ffaa33)' : 'linear-gradient(90deg,#06ffa5,#00d4ff)';
+    val.textContent = Math.ceil(pct)+'%';
+    val.style.color = pct<15 ? '#ff4757' : pct<30 ? '#ffd166' : '#06ffa5';
+    if (pct < 5) { verdict.style.opacity='1'; verdict.textContent='OUT OF FUEL'; }
+  }, 80);
+}
+
+function animateStreakMechanic() {
+  const num  = document.getElementById('mstreak-num');
+  const mults= [document.getElementById('sm1'),document.getElementById('sm2'),document.getElementById('sm3'),document.getElementById('sm4')];
+  if (!num) return;
+  let streak = 0;
+  setInterval(() => {
+    streak = (streak >= 6) ? 0 : streak+1;
+    num.textContent = streak;
+    num.style.color = streak>=5 ? '#ffd166' : streak>=3 ? '#a855f7' : streak>=2 ? '#00d4ff' : '#4a7a9b';
+    mults.forEach((m,i) => {
+      if (!m) return;
+      const active = (i===0&&streak>=1)||(i===1&&streak>=2)||(i===2&&streak>=3)||(i===3&&streak>=5);
+      m.className = 'smult' + (active?' smult-active':'');
+    });
+  }, 900);
+}
+
+// ── 5. SCROLL REVEAL ─────────────────────
+function initScrollReveal() {
+  const els = document.querySelectorAll('.section-inner, .rank-rung, .mechanic-card, .level-card');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  els.forEach(el => { el.classList.add('will-reveal'); obs.observe(el); });
+}
+
+// ── MAIN LOOP ────────────────────────────
+function loop() {
+  drawStars();
+  updateDemo();
+  drawDemo();
+  requestAnimationFrame(loop);
+}
+
+// ── BOOT ────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  initDemo();
+  initLeaderboard();
+  animateSpeedMechanic();
+  animateFuelMechanic();
+  animateStreakMechanic();
+  initScrollReveal();
+  loop();
+});
+window.addEventListener('resize', () => { initDemo(); initStars(); });
+</script>
+
+<style>
+/* ════════════════════════════════════════
+   LANDING PAGE STYLES
+════════════════════════════════════════ */
+:root {
+  --void:   #020408;
+  --blue:   #00d4ff;
+  --gold:   #ffd166;
+  --green:  #06ffa5;
+  --red:    #ff4757;
+  --purple: #a855f7;
+  --bright: #e8f4fd;
+  --dim:    #4a7a9b;
+  --font-h: 'Rajdhani', sans-serif;
+  --font-m: 'JetBrains Mono', monospace;
+  --font-b: 'Exo 2', sans-serif;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--void);
+  color: var(--bright);
+  font-family: var(--font-b);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { text-decoration:none; color:inherit; }
+
+/* FIXED BACKGROUND LAYERS */
+#star-canvas, #nebula, #scanlines {
+  position: fixed; inset:0; pointer-events:none; z-index:0;
+}
+#nebula {
+  background:
+    radial-gradient(ellipse 55% 35% at 15% 75%, rgba(168,85,247,.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 85% 20%, rgba(0,212,255,.04) 0%, transparent 60%);
+}
+#scanlines {
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.02) 2px,rgba(0,0,0,.02) 4px);
+  z-index:1;
+}
+
+/* SECTIONS */
+section { position:relative; z-index:2; }
+
+/* ── HERO ── */
+#hero {
+  position: relative;
+  min-height: 100dvh;
+  display: flex; flex-direction:column; align-items:center; justify-content:center;
+  overflow: hidden;
+}
+#demo-canvas {
+  position: absolute; inset:0;
+  width:100%; height:100%;
+  opacity: 0.65;
+}
+
+/* Live bar */
+#live-bar {
+  position: absolute; top: 20px; left:50%; transform: translateX(-50%);
+  display: flex; align-items:center; gap:10px;
+  background: rgba(2,4,8,0.75);
+  border: 1px solid rgba(0,212,255,0.18);
+  border-radius: 40px;
+  padding: 7px 18px;
+  font-family: var(--font-m);
+  font-size: clamp(10px,2.5vw,12px);
+  color: var(--dim);
+  white-space: nowrap;
+  backdrop-filter: blur(12px);
+  z-index: 10;
+}
+.live-dot {
+  width: 8px; height:8px; border-radius:50%;
+  background: var(--green);
+  box-shadow: 0 0 8px rgba(6,255,165,0.8);
+  animation: pulse-dot 1.5s ease-in-out infinite;
+  flex-shrink:0;
+  transition: transform 0.3s;
+}
+@keyframes pulse-dot { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+.live-sep { color: rgba(74,122,155,0.4); }
+#live-latest { color: var(--bright); }
+
+/* Hero content */
+#hero-content {
+  position: relative; z-index:5;
+  text-align: center;
+  padding: 0 20px;
+  max-width: 700px;
+  animation: fadeUp 1s ease both;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+#hero-badge {
+  font-family: var(--font-h);
+  font-size: clamp(10px,2.5vw,13px);
+  font-weight:600; letter-spacing:5px;
+  color: var(--blue); opacity:.7;
+  margin-bottom: 16px;
+}
+#hero-title {
+  font-family: var(--font-h);
+  font-size: clamp(36px,8vw,80px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, #fff 0%, #a8d8f0 40%, #a855f7 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 40px rgba(0,212,255,0.25));
+  margin-bottom: 20px;
+}
+#hero-sub {
+  font-family: var(--font-b);
+  font-size: clamp(14px,3vw,20px);
+  font-weight: 400; line-height:1.65;
+  color: rgba(232,244,253,0.65);
+  margin-bottom: 36px;
+}
+#hero-actions { display:flex; flex-direction:column; align-items:center; gap:14px; }
+
+/* PLAY BUTTON */
+#btn-hero-play, #btn-cta-play {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  border-radius: 50px;
+  padding: clamp(16px,4vw,20px) clamp(40px,10vw,72px);
+  font-family: var(--font-h);
+  font-size: clamp(15px,4vw,20px);
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--void);
+  box-shadow: 0 6px 40px rgba(0,212,255,0.35);
+  animation: glow-pulse 2.5s ease-in-out infinite;
+  position: relative; overflow:hidden;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+#btn-hero-play::before, #btn-cta-play::before {
+  content:''; position:absolute; inset:0;
+  background: rgba(255,255,255,0.15);
+  transform: translateX(-100%);
+  transition: transform 0.4s;
+}
+#btn-hero-play:hover::before, #btn-cta-play:hover::before { transform:translateX(100%); }
+#btn-hero-play:hover, #btn-cta-play:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 50px rgba(0,212,255,0.55);
+}
+@keyframes glow-pulse {
+  0%,100%{ box-shadow:0 6px 40px rgba(0,212,255,0.35); }
+  50%{ box-shadow:0 8px 60px rgba(0,212,255,0.6), 0 0 30px rgba(168,85,247,0.3); }
+}
+#hero-meta {
+  font-family: var(--font-m);
+  font-size: clamp(10px,2.3vw,12px);
+  color: rgba(74,122,155,0.7);
+  letter-spacing: 1px;
+}
+
+/* Scroll hint */
+#scroll-hint {
+  position:absolute; bottom:28px; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  z-index:5; opacity:0.45;
+  animation: bob 2s ease-in-out infinite;
+}
+@keyframes bob { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(8px);} }
+.scroll-arrow { font-size:20px; color:var(--blue); }
+.scroll-label { font-family:var(--font-h); font-size:10px; letter-spacing:3px; color:var(--dim); }
+
+/* ── SHARED SECTION STYLES ── */
+.section-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(60px,10vw,100px) clamp(20px,5vw,40px);
+}
+.section-eyebrow {
+  font-family: var(--font-h);
+  font-size: clamp(10px,2.5vw,12px);
+  font-weight: 600; letter-spacing:5px;
+  color: var(--blue); opacity:.7;
+  margin-bottom: 14px;
+}
+.section-title {
+  font-family: var(--font-h);
+  font-size: clamp(26px,6vw,52px);
+  font-weight: 700; line-height:1.12;
+  letter-spacing:-0.5px;
+  color: var(--bright);
+  margin-bottom: 14px;
+}
+.section-sub {
+  font-family: var(--font-b);
+  font-size: clamp(14px,3vw,17px);
+  font-weight: 400; line-height:1.65;
+  color: rgba(232,244,253,0.55);
+  margin-bottom: 44px;
+}
+
+/* Scroll reveal */
+.will-reveal { opacity:0; transform:translateY(24px); transition:opacity 0.6s ease, transform 0.6s ease; }
+.revealed    { opacity:1; transform:translateY(0); }
+
+/* ── SECTION 2: LIVE LEADERBOARD ── */
+#section-lb { background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,212,255,0.04) 0%, transparent 70%); }
+#lb-preview {
+  background: rgba(5,12,24,0.7);
+  border: 1px solid rgba(0,212,255,0.12);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  backdrop-filter: blur(12px);
+}
+.lb-loading-msg {
+  padding: 40px; text-align:center;
+  font-family:var(--font-m); font-size:13px;
+  color:var(--dim); letter-spacing:2px;
+  animation: blink 1.2s infinite;
+}
+@keyframes blink { 50%{opacity:0.3;} }
+.lb-row {
+  display: flex; align-items:center; gap:14px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(0,212,255,0.06);
+  transition: background 0.2s;
+}
+.lb-row:last-child { border-bottom:none; }
+.lb-row:hover { background:rgba(0,212,255,0.04); }
+.lb-rank {
+  font-family:var(--font-h); font-size:clamp(14px,4vw,18px); font-weight:700;
+  min-width:36px; text-align:center;
+}
+.lb-avatar { font-size:clamp(22px,6vw,28px); }
+.lb-info { flex:1; min-width:0; }
+.lb-name {
+  font-family:var(--font-h); font-size:clamp(14px,4vw,17px); font-weight:700;
+  letter-spacing:2px; color:var(--bright);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.lb-meta {
+  font-family:var(--font-b); font-size:clamp(11px,2.5vw,13px);
+  color:var(--dim); margin-top:2px; letter-spacing:0.5px;
+}
+.lb-score {
+  font-family:var(--font-h); font-size:clamp(16px,5vw,22px); font-weight:700;
+  color:var(--rc,var(--gold)); flex-shrink:0;
+}
+#lb-cta-row { text-align:center; }
+.btn-secondary-link {
+  font-family:var(--font-h); font-size:clamp(12px,3vw,15px); font-weight:600;
+  letter-spacing:2px; color:var(--blue);
+  border:1px solid rgba(0,212,255,0.3);
+  padding:12px 28px; border-radius:40px;
+  display:inline-block;
+  transition:all 0.2s;
+}
+.btn-secondary-link:hover { background:rgba(0,212,255,0.1); border-color:rgba(0,212,255,0.6); }
+
+/* ── SECTION 3: RANK LADDER ── */
+#section-ranks { background: radial-gradient(ellipse 70% 40% at 50% 50%, rgba(168,85,247,0.04) 0%, transparent 70%); }
+#rank-ladder { display:flex; flex-direction:column; gap:0; margin-bottom:0; }
+.rank-rung {
+  display:flex; align-items:center; gap:16px;
+  padding:16px 22px;
+  border-radius:12px;
+  border: 1px solid transparent;
+  transition: all 0.3s;
+  position:relative;
+}
+.rank-rung:hover { background: rgba(255,255,255,0.03); transform:translateX(6px); }
+.rung-commander { border-color:rgba(255,209,102,0.25); background:rgba(255,209,102,0.04); }
+.rung-ace       { border-color:rgba(168,85,247,0.2);   background:rgba(168,85,247,0.03); }
+.rung-veteran   { border-color:rgba(6,255,165,0.18);   background:rgba(6,255,165,0.03); }
+.rung-pilot     { border-color:rgba(0,212,255,0.15);   background:rgba(0,212,255,0.02); }
+.rung-cadet     { border-color:rgba(74,122,155,0.15);  background:rgba(74,122,155,0.03); }
+.active-rung    { border-color:rgba(0,212,255,0.3) !important; }
+.rung-icon { font-size:clamp(24px,6vw,32px); flex-shrink:0; }
+.rung-info { flex:1; min-width:0; }
+.rung-title {
+  font-family:var(--font-h); font-size:clamp(15px,4vw,20px); font-weight:700;
+  letter-spacing:3px; color:var(--bright); margin-bottom:3px;
+}
+.rung-req {
+  font-family:var(--font-b); font-size:clamp(12px,2.8vw,14px);
+  color:var(--dim); line-height:1.4;
+}
+.rung-badge {
+  font-family:var(--font-h); font-size:clamp(8px,2vw,10px); font-weight:700;
+  letter-spacing:2px; padding:4px 10px; border-radius:20px; flex-shrink:0;
+}
+.rung-badge.rare   { background:rgba(255,209,102,0.12); color:var(--gold);   border:1px solid rgba(255,209,102,0.3); }
+.rung-badge.hard   { background:rgba(168,85,247,0.12);  color:var(--purple); border:1px solid rgba(168,85,247,0.3); }
+.rung-badge.medium { background:rgba(6,255,165,0.1);    color:var(--green);  border:1px solid rgba(6,255,165,0.25); }
+.rung-badge.easy   { background:rgba(0,212,255,0.08);   color:var(--blue);   border:1px solid rgba(0,212,255,0.2); }
+.rung-badge.you    { background:rgba(74,122,155,0.1);   color:var(--dim);    border:1px solid rgba(74,122,155,0.2); }
+.rank-connector {
+  height:1px; margin:0 44px;
+  background:linear-gradient(90deg,transparent,rgba(0,212,255,0.12),transparent);
+}
+
+/* ── SECTION 4: MECHANICS ── */
+#section-how { background: rgba(2,4,8,0.5); }
+#mechanics-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; }
+.mechanic-card {
+  background:rgba(5,12,24,0.7);
+  border:1px solid rgba(0,212,255,0.1);
+  border-radius:16px;
+  overflow:hidden;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.mechanic-card:hover { transform:translateY(-4px); border-color:rgba(0,212,255,0.25); }
+.mech-demo {
+  padding:24px 20px 16px;
+  background:rgba(0,0,0,0.3);
+  border-bottom:1px solid rgba(0,212,255,0.07);
+  display:flex; flex-direction:column; align-items:center; gap:10px; min-height:140px;
+}
+.mech-vspeed { display:flex; align-items:baseline; gap:10px; }
+.mech-label { font-family:var(--font-m); font-size:10px; color:var(--dim); letter-spacing:2px; }
+.mech-val { font-family:var(--font-h); font-size:clamp(28px,8vw,40px); font-weight:700; line-height:1; transition:color 0.3s; }
+.mech-val.ok     { color:var(--green); }
+.mech-val.warn   { color:var(--gold); }
+.mech-val.danger { color:var(--red); animation:blink 0.5s infinite; }
+.mech-craft { font-size:28px; }
+.mech-pad-line { width:80px; height:3px; background:rgba(6,255,165,0.5); border-radius:2px; }
+.mech-verdict { font-family:var(--font-h); font-size:13px; font-weight:700; letter-spacing:2px; transition:opacity 0.3s; }
+.crash-verdict { color:var(--red); text-shadow:0 0 10px rgba(255,71,87,0.5); }
+
+/* Fuel demo */
+.fuel-display { display:flex; align-items:center; gap:12px; width:100%; }
+.fuel-bar-outer { flex:1; height:10px; background:rgba(255,255,255,0.06); border-radius:5px; overflow:hidden; border:1px solid rgba(0,212,255,0.1); }
+.fuel-bar-inner { height:100%; border-radius:5px; transition:width 0.08s linear, background 0.4s; width:100%; }
+
+/* Streak demo */
+.streak-display { text-align:center; }
+.streak-num { font-family:var(--font-h); font-size:clamp(40px,12vw,56px); font-weight:700; line-height:1; transition:color 0.4s; }
+.streak-label { font-family:var(--font-m); font-size:10px; color:var(--dim); letter-spacing:3px; margin-top:2px; }
+.streak-multipliers { display:flex; gap:8px; }
+.smult { font-family:var(--font-h); font-size:14px; font-weight:700; padding:5px 10px; border-radius:20px; border:1px solid rgba(0,212,255,0.15); color:var(--dim); transition:all 0.4s; }
+.smult-active { background:rgba(0,212,255,0.15); border-color:rgba(0,212,255,0.5); color:var(--blue); box-shadow:0 0 12px rgba(0,212,255,0.3); }
+
+.mech-title { font-family:var(--font-h); font-size:clamp(16px,4vw,20px); font-weight:700; letter-spacing:2px; color:var(--bright); padding:16px 20px 6px; }
+.mech-desc  { font-family:var(--font-b); font-size:clamp(13px,3vw,15px); font-weight:400; line-height:1.65; color:rgba(232,244,253,0.55); padding:0 20px 20px; }
+
+/* ── SECTION 5: LEVELS ── */
+#section-levels { background: radial-gradient(ellipse 60% 40% at 50% 100%, rgba(255,71,87,0.04) 0%, transparent 70%); }
+#level-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; }
+.level-card {
+  border-radius:14px; padding:22px 20px;
+  border:1px solid transparent;
+  transition:transform 0.3s, box-shadow 0.3s;
+  cursor:default;
+}
+.level-card:hover { transform:translateY(-5px); }
+.lc-easy { background:rgba(6,255,165,0.04); border-color:rgba(6,255,165,0.18); }
+.lc-med  { background:rgba(255,209,102,0.04); border-color:rgba(255,209,102,0.2); }
+.lc-hard { background:rgba(255,71,87,0.04); border-color:rgba(255,71,87,0.2); }
+.lc-void { background:rgba(168,85,247,0.05); border-color:rgba(168,85,247,0.25); }
+.lc-easy:hover { box-shadow:0 8px 30px rgba(6,255,165,0.12); }
+.lc-med:hover  { box-shadow:0 8px 30px rgba(255,209,102,0.12); }
+.lc-hard:hover { box-shadow:0 8px 30px rgba(255,71,87,0.12); }
+.lc-void:hover { box-shadow:0 8px 30px rgba(168,85,247,0.15); }
+.lc-num { font-family:var(--font-h); font-size:clamp(28px,8vw,40px); font-weight:700; line-height:1; margin-bottom:6px; }
+.lc-easy .lc-num { color:var(--green); }
+.lc-med  .lc-num { color:var(--gold); }
+.lc-hard .lc-num { color:var(--red); }
+.lc-void .lc-num { color:var(--purple); }
+.lc-title { font-family:var(--font-h); font-size:clamp(12px,3vw,15px); font-weight:700; letter-spacing:4px; color:var(--dim); margin-bottom:14px; }
+.lc-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
+.lc-tag { font-family:var(--font-m); font-size:clamp(9px,2.2vw,11px); padding:3px 9px; border-radius:20px; background:rgba(255,255,255,0.06); color:var(--dim); border:1px solid rgba(255,255,255,0.08); }
+.lc-feel { font-family:var(--font-b); font-size:clamp(12px,2.8vw,14px); color:rgba(232,244,253,0.45); line-height:1.5; font-style:italic; }
+
+/* ── SECTION 6: FINAL CTA ── */
+#section-cta {
+  background: linear-gradient(180deg, rgba(0,212,255,0.03) 0%, rgba(168,85,247,0.05) 100%);
+  border-top:1px solid rgba(0,212,255,0.08);
+}
+.cta-inner { text-align:center; }
+.cta-stat {
+  font-family:var(--font-h); font-size:clamp(11px,3vw,14px); font-weight:600;
+  letter-spacing:3px; color:var(--blue); opacity:0.8;
+  margin-bottom:20px;
+}
+#cta-title {
+  font-family:var(--font-h); font-size:clamp(28px,7vw,58px); font-weight:700;
+  line-height:1.1; letter-spacing:-0.5px;
+  background:linear-gradient(135deg,#fff 0%,#00d4ff 50%,#a855f7 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  margin-bottom:16px;
+}
+#cta-sub {
+  font-family:var(--font-b); font-size:clamp(14px,3vw,18px); font-weight:400;
+  color:rgba(232,244,253,0.55); margin-bottom:36px; line-height:1.6;
+}
+#cta-no-login {
+  margin-top:20px;
+  font-family:var(--font-m); font-size:clamp(10px,2.5vw,12px);
+  color:rgba(74,122,155,0.6); letter-spacing:1px;
+}
+
+/* ── FOOTER ── */
+#footer {
+  position:relative; z-index:2;
+  text-align:center;
+  padding:40px 20px;
+  border-top:1px solid rgba(0,212,255,0.06);
+}
+.footer-logo { font-family:var(--font-h); font-size:28px; font-weight:700; letter-spacing:6px; color:var(--dim); margin-bottom:6px; }
+.footer-sub  { font-family:var(--font-b); font-size:13px; color:rgba(74,122,155,0.5); margin-bottom:12px; }
+.footer-links { font-family:var(--font-m); font-size:12px; color:rgba(74,122,155,0.4); display:flex; justify-content:center; align-items:center; gap:12px; }
+.footer-links a { color:var(--blue); opacity:0.6; transition:opacity 0.2s; }
+.footer-links a:hover { opacity:1; }
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  #live-bar { font-size:10px; padding:5px 12px; gap:6px; max-width:90vw; }
+  #live-latest { display:none; }
+  .rank-connector { margin:0 24px; }
+}
+</style>
+</body>
+</html>

@@ -97,8 +97,28 @@ const ScreenManager = (() => {
     }
   }
 
+  // ─── Realtime: auto-refresh leaderboard when a new score arrives ───
+  function _setupRealtimeLiveRefresh() {
+    Storage.onBoardUpdate((newBoard) => {
+      // Only re-render if leaderboard screen is currently visible
+      if (_current !== 'screen-leaderboard') return;
+      const pilot = Storage.loadPilot();
+      const name  = pilot ? pilot.name : '';
+      console.log('[Realtime] Live board update — re-rendering leaderboard');
+      Leaderboard.renderBoard(newBoard, name, _lbTab);
+      // Flash the header to signal live update
+      const title = document.querySelector('.lb-title');
+      if (title) {
+        title.style.transition = 'opacity 0.2s';
+        title.style.opacity = '0.4';
+        setTimeout(() => { title.style.opacity = '1'; }, 200);
+      }
+    });
+  }
+
   // ─── Wire Buttons ───
   function bindAll() {
+    _setupRealtimeLiveRefresh();
     // Splash → Home
     const btnConfirm = document.getElementById('btn-confirm-pilot');
     if (btnConfirm) {
