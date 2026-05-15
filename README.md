@@ -33,7 +33,7 @@ lunar-lander/
 │   └── main.js             Application bootstrap
 └── README.md
 ```
-
+# Folder structure above
 ---
 
 ## 🎮 Screens
